@@ -19,6 +19,9 @@ public class Cutout {
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.PASTURE_PERENNIALS.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.FROSTY_PERENNIALS.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.UNDERGROWTH_PERENNIALS.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.ROCK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.ELEPHANT_LEAF.get(), RenderType.cutout());
+
 
     }
 }
