@@ -2,6 +2,7 @@ package com.teamtaiga.verdure;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
+import com.teamtaiga.verdure.Client.Event.Cutout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -50,6 +51,7 @@ public class Verdure
         MinecraftForge.EVENT_BUS.register(this);
 
         REGISTRY_HELPER.register(bus);
+        bus.addListener(Cutout::init);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
