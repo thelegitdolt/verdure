@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "axis=x": [
+      {
+        "model": "verdure:block/riverstone",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "verdure:block/riverstone",
+        "y": 90,
+        "x": 90
+      }
+    ],
+    "axis=y": [
+      {
+        "model": "verdure:block/riverstone"
+      },
+      {
+        "model": "verdure:block/riverstone",
+        "y": 180
+      }
+    ],
+    "axis=z": [
+      {
+        "model": "verdure:block/riverstone",
+        "x": 90
+      },
+      {
+        "model": "verdure:block/riverstone",
+        "y": 180,
+        "x": 90
+      }
+    ]
+  }
+}

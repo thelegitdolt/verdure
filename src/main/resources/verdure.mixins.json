@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.teamabnormals.neapolitan.core.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "neapolitan.refmap.json",
+  "mixins": [],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

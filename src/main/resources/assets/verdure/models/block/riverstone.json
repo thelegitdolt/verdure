@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "verdure:block/riverstone_top",
+    "side": "verdure:block/riverstone"
+  }
+}

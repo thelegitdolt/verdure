@@ -1,0 +1,21 @@
+{
+  "block.verdure.blue_daisies": "Blue Daisies",
+  "block.verdure.clover": "Clover",
+  "block.verdure.daisies": "Daisies",
+  "block.verdure.pink_daisies": "Pink Daisies",
+  "block.verdure.rock": "Rock",
+  "block.verdure.slate": "Riverstone",
+  "block.verdure.smooth_dirt": "Packed Dirt",
+  "block.verdure.hanging_moss": "Hanging Moss",
+  "block.verdure.tall_hanging_moss": "Tall Hanging Moss",
+  "block.verdure.oak_branch": "Oak Branch",
+  "block.verdure.birch_branch": "Birch Branch",
+  "block.verdure.fallen_oak_leaves": "Fallen Oak Leaves",
+  "block.verdure.fallen_acacia_leaves": "Fallen Acacia Leaves",
+  "block.verdure.fallen_birch_leaves": "Fallen Birch Leaves",
+  "block.verdure.fallen_dark_oak_leaves": "Fallen Dark Oak Leaves",
+  "block.verdure.fallen_jungle_leaves": "Fallen Jungle Leaves",
+  "block.verdure.fallen_spruce_leaves": "Fallen Spruce Leaves",
+  "container.verdure.tree_hollow": "Tree Hollow",
+  "itemGroup.verdure": "Verdure"
+}

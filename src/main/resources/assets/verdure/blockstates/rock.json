@@ -1,0 +1,115 @@
+{
+  "variants": {
+    "level=0": [
+      {
+        "model": "verdure:block/rock1_1",
+      },
+      {
+        "model": "verdure:block/rock1_1",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock1_1",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock1_1",
+	"y": 270
+      },
+      {
+        "model": "verdure:block/rock1_2",
+      },
+      {
+        "model": "verdure:block/rock1_2",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock1_2",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock1_2",
+	"y": 270
+      },
+      {
+        "model": "verdure:block/rock1_3",
+      },
+      {
+        "model": "verdure:block/rock1_3",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock1_3",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock1_3",
+	"y": 270
+      }
+    ],
+    "level=1": [
+      {
+        "model": "verdure:block/rock2_1",
+      },
+      {
+        "model": "verdure:block/rock2_1",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock2_1",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock2_1",
+	"y": 270
+      },
+      {
+        "model": "verdure:block/rock2_2",
+      },
+      {
+        "model": "verdure:block/rock2_2",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock2_2",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock2_2",
+	"y": 270
+      }
+    ],
+    "level=2": [
+      {
+        "model": "verdure:block/rock3_1",
+      },
+      {
+        "model": "verdure:block/rock3_1",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock3_1",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock3_1",
+	"y": 270
+      },
+      {
+        "model": "verdure:block/rock3_2",
+      },
+      {
+        "model": "verdure:block/rock3_2",
+	"y": 90
+      },
+      {
+        "model": "verdure:block/rock3_2",
+	"y": 180
+      },
+      {
+        "model": "verdure:block/rock3_2",
+	"y": 270
+      }
+    ]
+  }
+}

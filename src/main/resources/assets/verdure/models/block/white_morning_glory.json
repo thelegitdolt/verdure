@@ -1,0 +1,50 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"textures": {
+		"cross": "verdure:block/white_morning_glory",
+		"particle": "verdure:block/white_morning_glory"
+	},
+	"elements": [
+		{
+			"from": [0.8, 0, 8],
+			"to": [15.2, 5, 8],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [16, 0, 8, 2.5], "texture": "#cross"},
+				"east": {"uv": [0, 0, 0, 0], "texture": "#cross"},
+				"south": {"uv": [16, 2.5, 8, 5], "texture": "#cross"},
+				"west": {"uv": [0, 0, 0, 0], "texture": "#cross"},
+				"up": {"uv": [0, 0, 0, 0], "texture": "#cross"},
+				"down": {"uv": [0, 0, 0, 0], "texture": "#cross"}
+			}
+		},
+		{
+			"from": [8, 0, 0.8],
+			"to": [8, 5, 15.2],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 0], "texture": "#cross"},
+				"east": {"uv": [8, 5, 16, 7.5], "texture": "#cross"},
+				"south": {"uv": [0, 0, 0, 0], "texture": "#cross"},
+				"west": {"uv": [16, 5, 8, 7.5], "texture": "#cross"},
+				"up": {"uv": [0, 0, 0, 0], "texture": "#cross"},
+				"down": {"uv": [0, 0, 0, 0], "texture": "#cross"}
+			}
+		},
+		{
+			"from": [0, 5, 0],
+			"to": [16, 5, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 0], "texture": "#cross"},
+				"east": {"uv": [0, 0, 16, 0], "texture": "#cross"},
+				"south": {"uv": [0, 0, 16, 0], "texture": "#cross"},
+				"west": {"uv": [0, 0, 16, 0], "texture": "#cross"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#cross"},
+				"down": {"uv": [0, 16, 8, 8], "texture": "#cross"}
+			}
+		}
+	]
+}

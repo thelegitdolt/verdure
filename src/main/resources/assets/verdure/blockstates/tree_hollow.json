@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "verdure:block/tree_hollow",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "verdure:block/tree_hollow"
+    },
+    "facing=south": {
+      "model": "verdure:block/tree_hollow",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "verdure:block/tree_hollow",
+      "y": 270
+    }
+  }
+}

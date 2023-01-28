@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "verdure:block/butterfly_orchid_top"
+  }
+}

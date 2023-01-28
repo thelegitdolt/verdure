@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "verdure:block/butterfly_orchid_bottom"
+    },
+    "half=upper": {
+      "model": "verdure:block/butterfly_orchid_top"
+    }
+  }
+}
