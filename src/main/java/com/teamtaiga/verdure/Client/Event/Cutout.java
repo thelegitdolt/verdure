@@ -9,9 +9,9 @@ public class Cutout {
     public static void init(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.BUTTERFLY_ORCHID.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.CLOVER.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.BLUE_DAISY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.PINK_DAISY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.WHITE_DAISY.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.BLUE_DAISIES.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.PINK_DAISIES.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.WHITE_DAISIES.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.BLUE_MORNING_GLORY.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.WHITE_MORNING_GLORY.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(VerdureBlocks.PURPLE_MORNING_GLORY.get(), RenderType.cutout());
