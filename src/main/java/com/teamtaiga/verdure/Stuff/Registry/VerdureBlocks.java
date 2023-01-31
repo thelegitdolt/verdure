@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.common.block.BlueprintFlowerBlock;
 import com.teamabnormals.blueprint.common.block.BlueprintTallFlowerBlock;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
+import com.teamtaiga.verdure.Stuff.Blocks.CarpetFlowerBlock;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
 import com.teamtaiga.verdure.Verdure;
@@ -20,9 +21,9 @@ import net.minecraftforge.registries.RegistryObject;
 public class VerdureBlocks {
     public static final BlockSubRegistryHelper HELPER = Verdure.REGISTRY_HELPER.getBlockSubHelper();
 
-    public static final RegistryObject<Block> WHITE_MORNING_GLORY = HELPER.createBlock("white_morning_glory", () -> new BlueprintFlowerBlock(()-> MobEffects.DAMAGE_RESISTANCE, 16, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
-    public static final RegistryObject<Block> PURPLE_MORNING_GLORY = HELPER.createBlock("purple_morning_glory", () -> new BlueprintFlowerBlock(()-> MobEffects.DAMAGE_RESISTANCE, 16, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
-    public static final RegistryObject<Block> BLUE_MORNING_GLORY = HELPER.createBlock("blue_morning_glory", () -> new BlueprintFlowerBlock(()-> MobEffects.DAMAGE_RESISTANCE, 16, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> WHITE_MORNING_GLORY = HELPER.createBlock("white_morning_glory", () -> new CarpetFlowerBlock(()-> MobEffects.DAMAGE_RESISTANCE, 16, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> PURPLE_MORNING_GLORY = HELPER.createBlock("purple_morning_glory", () -> new CarpetFlowerBlock(()-> MobEffects.DAMAGE_RESISTANCE, 16, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> BLUE_MORNING_GLORY = HELPER.createBlock("blue_morning_glory", () -> new CarpetFlowerBlock(()-> MobEffects.DAMAGE_RESISTANCE, 16, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
 
     public static final RegistryObject<Block> CLOVER = HELPER.createBlock("clover", () -> new BushBlock(Props.CLOVER), CreativeModeTab.TAB_DECORATIONS);
 
