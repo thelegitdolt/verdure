@@ -1,6 +1,9 @@
 package com.teamtaiga.verdure.Stuff.Blocks;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,6 +36,10 @@ public class RockBlock extends Block {
             return this.defaultBlockState();
         }
 
+    }
+    @Override
+    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
+        return pLevel.getBlockState(pPos.below()).isFaceSturdy(pLevel, pPos.below(), Direction.UP);
     }
 
     @Override
