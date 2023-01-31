@@ -4,13 +4,12 @@ import com.teamabnormals.blueprint.common.block.BlueprintFlowerBlock;
 import com.teamabnormals.blueprint.common.block.BlueprintTallFlowerBlock;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
+import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
 import com.teamtaiga.verdure.Verdure;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -27,9 +26,9 @@ public class VerdureBlocks {
 
     public static final RegistryObject<Block> CLOVER = HELPER.createBlock("clover", () -> new BushBlock(Props.CLOVER), CreativeModeTab.TAB_DECORATIONS);
 
-    public static final RegistryObject<Block> WHITE_DAISY = HELPER.createBlock("white_daisy", () -> new BlueprintFlowerBlock(()-> MobEffects.REGENERATION, 12, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
-    public static final RegistryObject<Block> BLUE_DAISY = HELPER.createBlock("blue_daisy", () -> new BlueprintFlowerBlock(()-> MobEffects.REGENERATION, 12, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
-    public static final RegistryObject<Block> PINK_DAISY = HELPER.createBlock("pink_daisy", () -> new BlueprintFlowerBlock(()-> MobEffects.REGENERATION, 12, Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> WHITE_DAISY = HELPER.createBlock("white_daisy", () -> new DaisyBlock(Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> BLUE_DAISY = HELPER.createBlock("blue_daisy", () -> new DaisyBlock(Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> PINK_DAISY = HELPER.createBlock("pink_daisy", () -> new DaisyBlock(Block.Properties.of(Material.PLANT).noCollission().strength(0.0F).sound(SoundType.GRASS)), CreativeModeTab.TAB_DECORATIONS);
 
     public static final RegistryObject<Block> PASTURE_PERENNIALS = HELPER.createBlock("pasture_perennials", () -> new BushBlock(Props.CLOVER), CreativeModeTab.TAB_DECORATIONS);
     public static final RegistryObject<Block> FROSTY_PERENNIALS = HELPER.createBlock("frosty_perennials", () -> new BushBlock(Props.CLOVER), CreativeModeTab.TAB_DECORATIONS);
