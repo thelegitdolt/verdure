@@ -12,4 +12,5 @@ public class DaisyBlock extends MultifaceBlock {
     public MultifaceSpreader getSpreader() {
         return null;
     }
+
 }
