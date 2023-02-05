@@ -38,7 +38,7 @@ public class VerdureGeneration {
     public static final BiomeTagFilter TAGGED_IS_OVERWORLD = BiomeTagFilter.biomeIsInTag(BiomeTags.IS_OVERWORLD);
 
 
-    public static void registerWildCropGeneration() {
+    public static void registerGeneration() {
         FEATURE_DAISY_PATCH_WHITE = register(new ResourceLocation(Verdure.MOD_ID, "daisy_patch_white"),
                 VerdureBiomeFeature.DAISY_PATCH.get(),
                 getDaisyConfig(VerdureBlocks.WHITE_DAISIES.get(),

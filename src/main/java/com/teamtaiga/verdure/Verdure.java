@@ -3,7 +3,9 @@ package com.teamtaiga.verdure;
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import com.teamtaiga.verdure.Client.Event.Cutout;
+import com.teamtaiga.verdure.SpookyStuff.Events.CommonSetup;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeFeature;
+import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
 import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
@@ -37,12 +39,6 @@ public class Verdure {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
-
-    // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
-    public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("example_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));
-    // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
-    public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("example_block", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
-
     public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
     public Verdure() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -52,7 +48,9 @@ public class Verdure {
         REGISTRY_HELPER.register(bus);
         VerdureBiomeFeature.FEATURES.register(bus);
         VerdurePlacementModifiers.PLACEMENT_MODIFIERS.register(bus);
+        VerdureBiomeModifier.BIOME_MODIFIER_SERIALIZERS.register(bus);
         bus.addListener(Cutout::init);
+        bus.addListener(CommonSetup::init);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
