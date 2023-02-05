@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import com.teamtaiga.verdure.Client.Event.Cutout;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeFeature;
+import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -50,7 +51,7 @@ public class Verdure {
 
         REGISTRY_HELPER.register(bus);
         VerdureBiomeFeature.FEATURES.register(bus);
-        VerdureBiomeFeature.FEATURES.register(bus);
+        VerdurePlacementModifiers.PLACEMENT_MODIFIERS.register(bus);
         bus.addListener(Cutout::init);
     }
 
