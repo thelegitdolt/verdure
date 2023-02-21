@@ -33,19 +33,20 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
         WorldGenLevel level = context.level();
         RandomSource random = context.random();
         BlockPos pos = context.origin();
+        int minecraft = 0;
         for (Integer[] wassup : GenerateDaisyCords(random, Spread)) {
             if (wassup != null) {
                 // todo: make it check so it's like actually the highest block instead of overwriting blocks.
                 BlockPos daisyPos = new BlockPos(pos.getX() + wassup[0], pos.getY(), pos.getZ() + wassup[1]);
                 level.setBlock(daisyPos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
-                SpreadDaisies(level, daisyPos, random, 80);
+                minecraft += SpreadDaisies(level, daisyPos, random, 65);
             }
         }
         for (int i = -Spread; i <= Spread; i++) {
             for (int j = -Spread; j <= Spread; j++) {
                 int chance = 100 - ((int) (Math.sqrt(i*i + j*j)) * 20);
                 BlockPos toPos = new BlockPos(pos.getX() +i, pos.getY(), pos.getZ() + j);
-                if (random.nextInt(100) > chance) {
+                if (random.nextInt(100) > chance && !level.getBlockState(toPos).is(Daisy)) {
                     if (random.nextInt(5) < 3) {
                         level.setBlock(toPos, Short.defaultBlockState(), 2);
                     }
@@ -55,7 +56,7 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
                 }
             }
         }
-        return false;
+        return minecraft == 0;
     }
 
 
@@ -89,8 +90,8 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
         return cords;
     }
 
-    public void SpreadDaisies(WorldGenLevel level, BlockPos pos, RandomSource rand,  int chance) {
-        if (chance > 5) {
+    public int SpreadDaisies(WorldGenLevel level, BlockPos pos, RandomSource rand,  int chance) {
+        if (chance > 2) {
             boolean hasPlaced = false;
             if (rand.nextInt(100) < chance) {
                 for (Direction dir : Direction.Plane.HORIZONTAL) {
@@ -99,7 +100,7 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
                     if (!level.getBlockState(relativePos).is(Daisy) && rand.nextInt(3) > 1 && hasPlaced) {
                         level.setBlock(relativePos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
                         hasPlaced = true;
-                        SpreadDaisies(level, relativePos, rand, chance - 40);
+                        SpreadDaisies(level, relativePos, rand, chance - 30);
                     }
                 }
             }
@@ -116,6 +117,7 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
                 level.setBlock(pos, Flower.defaultBlockState(), 2);
             }
         }
+        return 1;
     }
 
     public static Integer[] generateCoords(RandomSource rand, int spread) {
