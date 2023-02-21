@@ -1,6 +1,7 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
+import com.teamtaiga.verdure.Stuff.VerdureUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -8,14 +9,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.PipeBlock;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
     public static final int[][] DIRECTIONS_WITH_DIAGONALS = new int[][] {
@@ -66,7 +62,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
                         level.setBlock(toPos, Short.defaultBlockState(), 2);
                     }
                     else {
-                        setDoubleBlock(level, toPos, Tall);
+                        VerdureUtil.setDoubleBlock(level, toPos, Tall);
                     }
                 }
             }
@@ -75,8 +71,8 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     public static int[] generateCoords(RandomSource rand, int spread) {
-        int i = RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 2);
-        int j = RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 2);
+        int i = VerdureUtil.RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 2);
+        int j = VerdureUtil.RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 2);
         return new int[]{i, j};
     }
 
@@ -101,7 +97,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
             boolean notPlaced = true;
             if (rand.nextInt(100) < chance) {
                 boolean daisyDoor = false;
-                for (int[] transformers : Randomize(DIRECTIONS_WITH_DIAGONALS)) {
+                for (int[] transformers : VerdureUtil.Randomize(DIRECTIONS_WITH_DIAGONALS)) {
                     BlockPos relativePos = new BlockPos(pos.getX() + transformers[0], pos.getY(), pos.getZ() + transformers[1]);
                     // todo: make it check so it's like actually the highest block instead of overwriting blocks.
                     if ((!level.getBlockState(relativePos).is(Daisy) && !level.getBlockState(relativePos).is(Flower) && notPlaced && rand.nextInt(6) == 0) || daisyDoor) {
@@ -111,7 +107,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
                         else {
                             level.setBlock(relativePos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
                             boolean backdoor = false;
-                            for (int[] kernel : Randomize(DIRECTIONS_WITH_DIAGONALS)) {
+                            for (int[] kernel : VerdureUtil.Randomize(DIRECTIONS_WITH_DIAGONALS)) {
                                 BlockPos SuperRelativePos = new BlockPos(relativePos.getX() + kernel[0], pos.getY(), relativePos.getZ() + kernel[1]);
                                 if (rand.nextInt(13) == 1 || backdoor) {
                                     if (!isInsideBoundingBox(origin, SuperRelativePos)) {
@@ -132,25 +128,10 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         }
         return 1;
     }
-    public static int RandomlyNegative(RandomSource rand, int hi) {
-        return rand.nextBoolean() ? hi : -hi;
-    }
 
     public boolean isInsideBoundingBox(BlockPos origin, BlockPos isItIdunno) {
         return Math.abs(isItIdunno.getX() - origin.getX()) < Spread + 1|| Math.abs(isItIdunno.getZ() - origin.getX()) < Spread + 1;
     }
 
 
-    public static void setDoubleBlock(WorldGenLevel level, BlockPos pos, DoublePlantBlock block) {
-        level.setBlock(pos, block.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER), 2);
-        level.setBlock(pos.above(), block.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 2);
-    }
-
-    public int[][] Randomize(int[][] toR) {
-        List<int[]> intList =  Arrays.asList(toR);
-
-        Collections.shuffle(intList);
-
-        return intList.toArray(toR);
-    }
 }
