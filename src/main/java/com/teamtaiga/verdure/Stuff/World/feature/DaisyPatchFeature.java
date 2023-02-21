@@ -113,7 +113,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
                             boolean backdoor = false;
                             for (int[] kernel : Randomize(DIRECTIONS_WITH_DIAGONALS)) {
                                 BlockPos SuperRelativePos = new BlockPos(relativePos.getX() + kernel[0], pos.getY(), relativePos.getZ() + kernel[1]);
-                                if (rand.nextInt(11) == 1 || backdoor) {
+                                if (rand.nextInt(13) == 1 || backdoor) {
                                     if (!isInsideBoundingBox(origin, SuperRelativePos)) {
                                         backdoor = true;
                                     } else {
