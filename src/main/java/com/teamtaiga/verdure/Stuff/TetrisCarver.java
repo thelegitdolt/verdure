@@ -37,13 +37,18 @@ public class TetrisCarver {
             List<int[]> checker;
             for (int[] kernel : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
                 checker = LastTetrisPiece;
+                boolean hasNotCarved = true;
                 for (int i = 0; i < nodesCount; i++) {
-                    checker.set(i, VerdureUtil.transformCords(checker.get(i), kernel));
-                    if (!Positions.containsAll(checker)) {
-                        for (int j = 0; j < checker.size(); j++) {
-                            if (!Positions.contains(checker.get(j))) {
-                                Positions.add(checker.get(j));
+                    if (hasNotCarved) {
+                        checker.set(i, VerdureUtil.transformCords(checker.get(i), kernel));
+                        if (!Positions.containsAll(checker)) {
+                            for (int j = 0; j < checker.size(); j++) {
+                                if (!Positions.contains(checker.get(j))) {
+                                    Positions.add(checker.get(j));
+                                }
                             }
+                            hasNotCarved = false;
+                            LastTetrisPiece = checker;
                         }
                     }
                 }
@@ -55,7 +60,7 @@ public class TetrisCarver {
 
     }
 
-    private BlockPos[] ConvertToBlockPos() {
+    private BlockPos[] ConvertToBlockPos(BlockPos origin) {
         return null;
     }
 }
