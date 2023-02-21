@@ -42,7 +42,7 @@ public class VerdureGeneration {
         FEATURE_DAISY_PATCH_WHITE = register(new ResourceLocation(Verdure.MOD_ID, "daisy_patch_white"),
                 VerdureBiomeFeature.DAISY_PATCH.get(),
                 getDaisyConfig(VerdureBlocks.WHITE_DAISIES.get(),
-                        Blocks.OXEYE_DAISY, Blocks.TALL_GRASS, Blocks.GRASS,
+                        Blocks.OXEYE_DAISY, Blocks.GRASS, Blocks.TALL_GRASS,
                         BlockPredicate.matchesTag(BLOCK_BELOW, BlockTags.DIRT)));
 
 
@@ -62,9 +62,10 @@ public class VerdureGeneration {
 
     public static DaisyPatchConfig getDaisyConfig(Block DT, Block SFT, Block tall, Block Short,
                                                        BlockPredicate plantedOn) {
-        return new DaisyPatchConfig(64, 6, 3,
+        return new DaisyPatchConfig(32, 3, 1,
                 plantBlockConfig(DT, plantedOn),
-                plantBlockConfig(SFT, plantedOn), plantBlockConfig(Short, plantedOn),
+                plantBlockConfig(SFT, plantedOn),
+                plantBlockConfig(Short, plantedOn),
                 plantBlockConfig(tall, plantedOn),null);
     }
 
