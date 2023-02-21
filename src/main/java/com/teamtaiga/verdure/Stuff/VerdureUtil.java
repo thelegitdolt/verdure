@@ -53,4 +53,8 @@ public class VerdureUtil {
         return base;
     }
 
+    public int FindNextAvailableY() {
+        return 0;
+    }
+
 }
