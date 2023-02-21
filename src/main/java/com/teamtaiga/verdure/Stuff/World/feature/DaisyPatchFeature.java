@@ -1,8 +1,10 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
+import com.teamtaiga.verdure.Stuff.World.VerdureGeneration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.*;
@@ -12,12 +14,21 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
-    private DoublePlantBlock Tall;
-    private Block Short;
-    private MultifaceBlock Daisy;
-    private Block Flower;
-    private int Spread;
-
+    public static final int[][] DIRECTIONS_WITH_DIAGONALS = new int[][] {
+        new int[]{0, 1},
+        new int[]{0, -1},
+        new int[]{1, -1},
+        new int[]{1, 0},
+        new int[]{1, 1},
+        new int[]{-1, -1},
+        new int[]{-1, 1},
+        new int[]{-1, 0}
+    };
+    private final DoublePlantBlock Tall;
+    private final Block Short;
+    private final MultifaceBlock Daisy;
+    private final Block Flower;
+    private final int Spread;
     public DaisyPatchFeature(Codec<NoneFeatureConfiguration> config, DoublePlantBlock tall, Block aShort, MultifaceBlock daisy, Block flower, int spread) {
         super(config);
         Tall = tall;
@@ -33,20 +44,21 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         RandomSource random = context.random();
         BlockPos pos = context.origin();
         int minecraft = 0;
-        for (Integer[] wassup : GenerateDaisyCords(random, Spread)) {
+        for (int[] wassup : GenerateDaisyCords(random, Spread)) {
             if (wassup != null) {
                 // todo: make it check so it's like actually the highest block instead of overwriting blocks.
                 BlockPos daisyPos = new BlockPos(pos.getX() + wassup[0], pos.getY(), pos.getZ() + wassup[1]);
                 level.setBlock(daisyPos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
-                minecraft += SpreadDaisies(level, daisyPos, random, 65);
+                minecraft += SpreadDaisies(level, daisyPos, random, pos, 90);
             }
         }
         for (int i = -Spread; i <= Spread; i++) {
             for (int j = -Spread; j <= Spread; j++) {
-                int chance = 100 - ((int) (Math.sqrt(i*i + j*j)) * 30);
+                int chance = 90 - (int) (Math.sqrt(i*i + j*j) * 25);
+                // todo: the thing
                 BlockPos toPos = new BlockPos(pos.getX() +i, pos.getY(), pos.getZ() + j);
-                if (random.nextInt(100) > chance && !level.getBlockState(toPos).is(Daisy)) {
-                    if (random.nextInt(5) < 3) {
+                if (random.nextInt(100) < chance && !level.getBlockState(toPos).is(Daisy)) {
+                    if (random.nextInt(3) < 2) {
                         level.setBlock(toPos, Short.defaultBlockState(), 2);
                     }
                     else {
@@ -58,12 +70,16 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         return minecraft == 0;
     }
 
+    public static int[] generateCoords(RandomSource rand, int spread) {
+        int i = RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 1);
+        int j = RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 1);
+        return new int[]{i, j};
+    }
 
-
-    public static Integer[][] GenerateDaisyCords(RandomSource rand, int spread) {
-        Integer[][] cords = new Integer[2][2];
+    public static int[][] GenerateDaisyCords(RandomSource rand, int spread) {
+        int[][] cords = new int[2][2];
         if (rand.nextBoolean()) {
-            Integer[] generated = generateCoords(rand, spread);
+            int[] generated = generateCoords(rand, spread);
             cords[0] = generated;
             for (int i = 0; i < 2; i++) {
                 generated[i] = -generated[i];
@@ -71,50 +87,39 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
             cords[1] = generated;
         }
         else {
-            cords[0] = new Integer[]{RandomlyNegative(rand, Math.round(rand.nextFloat())), RandomlyNegative(rand, Math.round(rand.nextFloat()))};
+            cords[0] = new int[]{RandomlyNegative(rand,  rand.nextInt(2)),  RandomlyNegative(rand, rand.nextInt(2))};
         }
         return cords;
     }
 
-    public int SpreadDaisies(WorldGenLevel level, BlockPos pos, RandomSource rand,  int chance) {
-        if (chance > 2) {
-            boolean hasPlaced = false;
+    public int SpreadDaisies(WorldGenLevel level, BlockPos pos, RandomSource rand, BlockPos origin, int chance) {
+        if (chance > 0) {
             if (rand.nextInt(100) < chance) {
-                for (Direction dir : Direction.Plane.HORIZONTAL) {
-                    BlockPos relativePos = pos.relative(dir);
+                for (int[] transformers : DIRECTIONS_WITH_DIAGONALS) {
+                    BlockPos relativePos = new BlockPos(pos.getX() + transformers[0], pos.getY(), pos.getZ() + transformers[1]);
                     // todo: make it check so it's like actually the highest block instead of overwriting blocks.
-                    if (!level.getBlockState(relativePos).is(Daisy) && rand.nextInt(3) > 1 && hasPlaced) {
+                    if (!level.getBlockState(relativePos).is(Daisy) && isInsideBoundingBox(origin, relativePos) && !level.getBlockState(relativePos).is(Flower) && rand.nextInt(4) == 0) {
                         level.setBlock(relativePos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
-                        hasPlaced = true;
-                        SpreadDaisies(level, relativePos, rand, chance - 30);
+                        for (int[] kernel : DIRECTIONS_WITH_DIAGONALS) {
+                            BlockPos SuperRelativePos = new BlockPos(relativePos.getX() + kernel[0], pos.getY(), relativePos.getZ() + kernel[1]);
+                            if (!level.getBlockState(SuperRelativePos).is(Daisy) && rand.nextInt(8)  == 1) {
+                                level.setBlock(SuperRelativePos, Flower.defaultBlockState(), 2);
+                            }
+                        }
+                        SpreadDaisies(level, relativePos, rand, origin,chance - 20);
+                        break;
                     }
                 }
-            }
-        }
-        else {
-            if (level.getBlockState(pos).is(Daisy)) {
-                for (Direction ect : Direction.Plane.HORIZONTAL) {
-                    if (!level.getBlockState(pos.relative(ect)).is(Daisy)) {
-                        level.setBlock(pos.relative(ect), Flower.defaultBlockState(), 2);
-                    }
-                }
-            }
-            else {
-                level.setBlock(pos, Flower.defaultBlockState(), 2);
             }
         }
         return 1;
     }
-
-    public static Integer[] generateCoords(RandomSource rand, int spread) {
-        Integer i = (int) Math.round(rand.nextDouble()) + (int) Math.round(rand.nextDouble()) + spread - 2;
-        Integer j = (int) Math.round(rand.nextDouble()) + (int) Math.round(rand.nextDouble()) + spread - 2;
-        i = RandomlyNegative(rand, i);
-        j = RandomlyNegative(rand, j);
-        return new Integer[]{i, j};
-    }
     public static int RandomlyNegative(RandomSource rand, int hi) {
         return rand.nextBoolean() ? hi : -hi;
+    }
+
+    public boolean isInsideBoundingBox(BlockPos origin, BlockPos isItIdunno) {
+        return !(Math.abs(isItIdunno.getX() - origin.getX()) > Spread + 1|| Math.abs(isItIdunno.getZ() - origin.getX()) > Spread + 1);
     }
 
 
