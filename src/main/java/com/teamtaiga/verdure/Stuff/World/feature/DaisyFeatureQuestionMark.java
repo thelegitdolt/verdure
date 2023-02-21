@@ -60,19 +60,6 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
     }
 
 
-    public static int roll(RandomSource rand) {
-        int hello = rand.nextInt(64);
-        if (hello < 24) {
-            return 0;
-        }
-        if (hello < 36) {
-            return 1;
-        }
-        if (hello < 52) {
-            return 2;
-        }
-        else return 3;
-    }
 
     public static Integer[][] GenerateDaisyCords(RandomSource rand, int spread) {
         Integer[][] cords = new Integer[2][2];
