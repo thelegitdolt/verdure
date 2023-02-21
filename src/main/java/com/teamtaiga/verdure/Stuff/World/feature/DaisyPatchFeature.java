@@ -14,16 +14,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
-    public static final int[][] DIRECTIONS_WITH_DIAGONALS = new int[][] {
-            new int[]{0, 1},
-            new int[]{0, -1},
-            new int[]{1, -1},
-            new int[]{1, 0},
-            new int[]{1, 1},
-            new int[]{-1, -1},
-            new int[]{-1, 1},
-            new int[]{-1, 0}
-    };
     private final DoublePlantBlock Tall;
     private final Block Short;
     private final MultifaceBlock Daisy;
@@ -97,7 +87,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
             boolean notPlaced = true;
             if (rand.nextInt(100) < chance) {
                 boolean daisyDoor = false;
-                for (int[] transformers : VerdureUtil.Randomize(DIRECTIONS_WITH_DIAGONALS)) {
+                for (int[] transformers : VerdureUtil.Randomize(VerdureUtil.DIRECTIONS_WITH_DIAGONALS)) {
                     BlockPos relativePos = new BlockPos(pos.getX() + transformers[0], pos.getY(), pos.getZ() + transformers[1]);
                     // todo: make it check so it's like actually the highest block instead of overwriting blocks.
                     if ((!level.getBlockState(relativePos).is(Daisy) && !level.getBlockState(relativePos).is(Flower) && notPlaced && rand.nextInt(6) == 0) || daisyDoor) {
@@ -107,7 +97,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
                         else {
                             level.setBlock(relativePos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
                             boolean backdoor = false;
-                            for (int[] kernel : VerdureUtil.Randomize(DIRECTIONS_WITH_DIAGONALS)) {
+                            for (int[] kernel : VerdureUtil.Randomize(VerdureUtil.DIRECTIONS_WITH_DIAGONALS)) {
                                 BlockPos SuperRelativePos = new BlockPos(relativePos.getX() + kernel[0], pos.getY(), relativePos.getZ() + kernel[1]);
                                 if (rand.nextInt(13) == 1 || backdoor) {
                                     if (isOutsideBoundingBox(origin, SuperRelativePos)) {
