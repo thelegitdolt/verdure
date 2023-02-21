@@ -1,7 +1,6 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -12,14 +11,14 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> {
+public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
     private DoublePlantBlock Tall;
     private Block Short;
     private MultifaceBlock Daisy;
     private Block Flower;
     private int Spread;
 
-    public DaisyFeatureQuestionMark(Codec<NoneFeatureConfiguration> config, DoublePlantBlock tall, Block aShort, MultifaceBlock daisy, Block flower, int spread) {
+    public DaisyPatchFeature(Codec<NoneFeatureConfiguration> config, DoublePlantBlock tall, Block aShort, MultifaceBlock daisy, Block flower, int spread) {
         super(config);
         Tall = tall;
         Short = aShort;
@@ -44,7 +43,7 @@ public class DaisyFeatureQuestionMark extends Feature<NoneFeatureConfiguration> 
         }
         for (int i = -Spread; i <= Spread; i++) {
             for (int j = -Spread; j <= Spread; j++) {
-                int chance = 100 - ((int) (Math.sqrt(i*i + j*j)) * 20);
+                int chance = 100 - ((int) (Math.sqrt(i*i + j*j)) * 30);
                 BlockPos toPos = new BlockPos(pos.getX() +i, pos.getY(), pos.getZ() + j);
                 if (random.nextInt(100) > chance && !level.getBlockState(toPos).is(Daisy)) {
                     if (random.nextInt(5) < 3) {

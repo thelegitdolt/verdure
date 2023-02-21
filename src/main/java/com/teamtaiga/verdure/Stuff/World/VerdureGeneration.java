@@ -1,86 +1,53 @@
 package com.teamtaiga.verdure.Stuff.World;
 
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeFeature;
+import com.google.common.collect.ImmutableList;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
+import com.teamtaiga.verdure.Stuff.World.feature.DaisyPatchFeature;
 import com.teamtaiga.verdure.Verdure;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-import java.util.List;
+import java.util.function.Supplier;
 
 public class VerdureGeneration {
-    public static Holder<ConfiguredFeature<DaisyPatchConfig, ?>> FEATURE_DAISY_PATCH_WHITE;
-    public static Holder<ConfiguredFeature<DaisyPatchConfig, ?>> FEATURE_DAISY_PATCH_PINK;
-    public static Holder<ConfiguredFeature<DaisyPatchConfig, ?>> FEATURE_DAISY_PATCH_BLUE;
-
-    public static Holder<PlacedFeature> DAISY_PATCH_WHITE;
-    public static Holder<PlacedFeature> DAISY_PATCH_PINK;
-    public static Holder<PlacedFeature> DAISY_PATCH_BLUE;
-
-    public static final BlockPos BLOCK_BELOW = new BlockPos(0, -1, 0);
-    public static final BlockPos BLOCK_ABOVE = new BlockPos(0, 1, 0);
-
-    public static final BiomeTagFilter TAGGED_IS_OVERWORLD = BiomeTagFilter.biomeIsInTag(BiomeTags.IS_OVERWORLD);
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Verdure.MOD_ID);
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> FEATURE_DAISY_PATCH_WHITE = FEATURES.register("daisy_patch_white", () -> new DaisyPatchFeature
+            (NoneFeatureConfiguration.CODEC, (DoublePlantBlock) Blocks.TALL_GRASS, Blocks.GRASS, (MultifaceBlock) VerdureBlocks.WHITE_DAISIES.get(), Blocks.OXEYE_DAISY, 2));
 
 
-    public static void registerGeneration() {
-        FEATURE_DAISY_PATCH_WHITE = register(new ResourceLocation(Verdure.MOD_ID, "daisy_patch_white"),
-                VerdureBiomeFeature.DAISY_PATCH.get(),
-                getDaisyConfig(VerdureBlocks.WHITE_DAISIES.get(),
-                        Blocks.OXEYE_DAISY, Blocks.GRASS, Blocks.TALL_GRASS,
-                        BlockPredicate.matchesTag(BLOCK_BELOW, BlockTags.DIRT)));
+    public static final class VerdureFeature {
+        public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, Verdure.MOD_ID);
+
+        public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> DAISY_PATCH_WHITE = register
+                ("daisy_patch_white", () -> new ConfiguredFeature<>(VerdureGeneration.FEATURE_DAISY_PATCH_WHITE.get(), FeatureConfiguration.NONE));
 
 
-        DAISY_PATCH_WHITE = registerPlacement(new ResourceLocation(Verdure.MOD_ID, "daisy_patch_white"),
-                FEATURE_DAISY_PATCH_WHITE, RarityFilter.onAverageOnceEvery(2),
-                InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome(), TAGGED_IS_OVERWORLD);
-
+        private static <FC extends FeatureConfiguration, F extends Feature<FC>> RegistryObject<ConfiguredFeature<FC, ?>> register(String name, Supplier<ConfiguredFeature<FC, F>> feature) {
+            return CONFIGURED_FEATURES.register(name, feature);
+        }
     }
 
+    public static final class VerdurePlacedFeatures {
+        public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, Verdure.MOD_ID);
 
-    static Holder<PlacedFeature> registerPlacement(ResourceLocation id,
-               Holder<? extends ConfiguredFeature<?, ?>> feature,
-               PlacementModifier... modifiers) {
-        return BuiltinRegistries.register(BuiltinRegistries.PLACED_FEATURE, id,
-                new PlacedFeature(Holder.hackyErase(feature), List.of(modifiers)));
+        public static final RegistryObject<PlacedFeature> DAISY_PATCH_WHITE = register("daisy_patch_white", VerdureFeature.DAISY_PATCH_WHITE,
+                RarityFilter.onAverageOnceEvery(8), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
+
+        private static RegistryObject<PlacedFeature> register(String name, RegistryObject<? extends ConfiguredFeature<?, ?>> feature, PlacementModifier... placementModifiers) {
+            return PLACED_FEATURES.register(name, () -> new PlacedFeature((Holder<ConfiguredFeature<?, ?>>) feature.getHolder().get(), ImmutableList.copyOf(placementModifiers)));
+        }
     }
-
-    public static DaisyPatchConfig getDaisyConfig(Block DT, Block SFT, Block tall, Block Short,
-                                                       BlockPredicate plantedOn) {
-        return new DaisyPatchConfig(32, 3, 1,
-                plantBlockConfig(DT, plantedOn),
-                plantBlockConfig(SFT, plantedOn),
-                plantBlockConfig(Short, plantedOn),
-                plantBlockConfig(tall, plantedOn),null);
-    }
-
-    private static <V extends T, T> Holder<V> register(Registry<T> registry, ResourceLocation id, V value) {
-        return (Holder<V>) BuiltinRegistries.<T>register(registry, id, value);
-    }
-
-    protected static <FC extends FeatureConfiguration, F extends Feature<FC>> Holder<ConfiguredFeature<FC, ?>> register(ResourceLocation id, F feature, FC featureConfig) {
-        return register(BuiltinRegistries.CONFIGURED_FEATURE, id, new ConfiguredFeature<>(feature, featureConfig));
-    }
-
-    public static Holder<PlacedFeature> plantBlockConfig(Block block, BlockPredicate plantedOn) {
-        return PlacementUtils.filtered(
-                Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(block)),
-                BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, plantedOn));
-    }
-
 }
