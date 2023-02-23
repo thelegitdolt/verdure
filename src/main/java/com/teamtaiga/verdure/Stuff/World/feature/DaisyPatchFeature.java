@@ -13,6 +13,8 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import static com.teamtaiga.verdure.Stuff.VerdureUtil.DIRECTIONS_WITH_DIAGONALS;
+
 public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
     private final DoublePlantBlock Tall;
     private final Block Short;
@@ -87,20 +89,20 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
             boolean notPlaced = true;
             if (rand.nextInt(100) < chance) {
                 boolean daisyDoor = false;
-                for (int[] transformers : VerdureUtil.Randomize(VerdureUtil.DIRECTIONS_WITH_DIAGONALS)) {
+                for (int[] transformers : VerdureUtil.Randomize(DIRECTIONS_WITH_DIAGONALS)) {
                     BlockPos relativePos = new BlockPos(pos.getX() + transformers[0], pos.getY(), pos.getZ() + transformers[1]);
                     // todo: make it check so it's like actually the highest block instead of overwriting blocks.
                     if ((!level.getBlockState(relativePos).is(Daisy) && !level.getBlockState(relativePos).is(Flower) && notPlaced && rand.nextInt(6) == 0) || daisyDoor) {
-                        if (isOutsideBoundingBox(pos, relativePos)) {
+                        if (!isInsideBoundingBox(pos, relativePos)) {
                             daisyDoor = true;
                         }
                         else {
                             level.setBlock(relativePos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true), 2);
                             boolean backdoor = false;
-                            for (int[] kernel : VerdureUtil.Randomize(VerdureUtil.DIRECTIONS_WITH_DIAGONALS)) {
+                            for (int[] kernel : VerdureUtil.Randomize(DIRECTIONS_WITH_DIAGONALS)) {
                                 BlockPos SuperRelativePos = new BlockPos(relativePos.getX() + kernel[0], pos.getY(), relativePos.getZ() + kernel[1]);
                                 if (rand.nextInt(13) == 1 || backdoor) {
-                                    if (isOutsideBoundingBox(origin, SuperRelativePos)) {
+                                    if (!isInsideBoundingBox(origin, SuperRelativePos)) {
                                         backdoor = true;
                                     } else {
                                         level.setBlock(SuperRelativePos, Flower.defaultBlockState(), 2);
@@ -119,7 +121,9 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         return 1;
     }
 
-    public boolean isOutsideBoundingBox(BlockPos origin, BlockPos isItIdunno) {
-        return Math.abs(isItIdunno.getX() - origin.getX()) >= Spread + 1|| Math.abs(isItIdunno.getZ() - origin.getX()) >= Spread + 1;
+    public boolean isInsideBoundingBox(BlockPos origin, BlockPos isItIdunno) {
+        return Math.abs(isItIdunno.getX() - origin.getX()) < Spread + 1|| Math.abs(isItIdunno.getZ() - origin.getX()) < Spread + 1;
     }
+
+
 }

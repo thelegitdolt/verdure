@@ -2,29 +2,26 @@ package com.teamtaiga.verdure.Stuff.World;
 
 import com.teamtaiga.verdure.Stuff.VerdureUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TetrisCarver {
     private final int nodesCount;
     private final List<int[]> Positions;
-    private List<int[]> LastTetrisPiece;
+    private List<int[]> InitialTetris;
 
     public TetrisCarver(int nodesCount) {
         this.nodesCount = nodesCount;
         Positions = new ArrayList<>();
         generateInitialTetris(Positions, new int[]{0, 0}, nodesCount);
-        LastTetrisPiece = Positions;
+        InitialTetris = Positions;
     }
 
     private static void generateInitialTetris(List<int[]> positions, int[] initialPos, int toGen) {
         positions.add(initialPos);
-        if (toGen <= 0) {
+        if (toGen > 0) {
             for (int[] cords : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
                 int[] newCord = VerdureUtil.transformCords(initialPos, cords);
                 if (!positions.contains(newCord)) {
@@ -34,27 +31,30 @@ public class TetrisCarver {
         }
     }
 
+    public List<int[]> getPositions() {
+        return Positions;
+    }
+
     public void Carve(int times) {
-        for (int amogus = 0; amogus < times; amogus++) {
-            List<int[]> checker;
+        Carve(this.Positions, times);
+    }
+
+    private void Carve(List<int[]> piece, int times) {
+        List<int[]> newPiece = new ArrayList<>();
+        if (times > 0) {
             for (int[] kernel : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
-                checker = LastTetrisPiece;
-                boolean hasNotCarved = true;
-                for (int i = 0; i < nodesCount; i++) {
-                    if (hasNotCarved) {
-                        checker.set(i, VerdureUtil.transformCords(checker.get(i), kernel));
-                        if (!new HashSet<>(Positions).containsAll(checker)) {
-                            for (int[] ints : checker) {
-                                if (!Positions.contains(ints)) {
-                                    Positions.add(ints);
-                                }
-                            }
-                            hasNotCarved = false;
-                            LastTetrisPiece = checker;
+                for (int[] cord : piece) {
+                    newPiece.add(VerdureUtil.transformCords(cord, kernel));
+                }
+                if (!new HashSet<>(Positions).containsAll(newPiece)) {
+                    for (int[] newCord : newPiece) {
+                        if (!Positions.contains(newCord)) {
+                            Positions.add(newCord);
                         }
                     }
                 }
             }
+            Carve(newPiece, times - 1);
         }
     }
 
@@ -79,11 +79,11 @@ public class TetrisCarver {
         small = 8191;
         for (int i = 0; i < Positions.size(); i++) {
             if (Positions.get(i)[1] > big) {
-                big = Positions.get(i)[0];
+                big = Positions.get(i)[1];
                 Z = i;
             }
             if (Positions.get(i)[1] < small) {
-                small = Positions.get(i)[0];
+                small = Positions.get(i)[1];
                 Zmol = i;
             }
         }
