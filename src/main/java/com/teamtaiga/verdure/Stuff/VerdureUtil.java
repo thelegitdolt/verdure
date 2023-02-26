@@ -32,14 +32,17 @@ public class VerdureUtil {
         level.setBlock(pos.above(), block.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 2);
     }
 
-
-
     public static int[][] Randomize(int[][] toR) {
         List<int[]> intList =  Arrays.asList(toR);
 
         Collections.shuffle(intList);
 
         return intList.toArray(toR);
+    }
+
+    // Credit: Sean Patrick Floyd on StackOverflow
+    public static boolean ArrayInList(List<int[]> list, int[] candidate) {
+        return list.stream().anyMatch(a -> Arrays.equals(a, candidate));
     }
 
     public static int RandomlyNegative(RandomSource rand, int hi) {

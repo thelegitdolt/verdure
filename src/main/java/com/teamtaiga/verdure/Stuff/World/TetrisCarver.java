@@ -10,22 +10,24 @@ import java.util.List;
 public class TetrisCarver {
     private final int nodesCount;
     private final List<int[]> Positions;
-    private List<int[]> InitialTetris;
+    private final List<int[]> InitialTetris;
 
     public TetrisCarver(int nodesCount) {
         this.nodesCount = nodesCount;
         Positions = new ArrayList<>();
-        generateInitialTetris(Positions, new int[]{0, 0}, nodesCount);
         InitialTetris = Positions;
+        Positions.add(new int[]{0, 0});
+        generateInitialTetris(new int[]{0, 0}, nodesCount);
     }
 
-    private static void generateInitialTetris(List<int[]> positions, int[] initialPos, int toGen) {
-        positions.add(initialPos);
-        if (toGen > 0) {
+    private void generateInitialTetris(int[] initialPos, int toGen) {
+        if (toGen > 1) {
             for (int[] cords : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
                 int[] newCord = VerdureUtil.transformCords(initialPos, cords);
-                if (!positions.contains(newCord)) {
-                    generateInitialTetris(positions, newCord, toGen - 1);
+                if (!VerdureUtil.ArrayInList(Positions, newCord)) {
+                    Positions.add(newCord.clone());
+                    generateInitialTetris(newCord, toGen - 1);
+                    break;
                 }
             }
         }
@@ -35,8 +37,9 @@ public class TetrisCarver {
         return Positions;
     }
 
+    // Carve can only be used once!!!!
     public void Carve(int times) {
-        Carve(this.Positions, times);
+        Carve(this.InitialTetris, times);
     }
 
     private void Carve(List<int[]> piece, int times) {
