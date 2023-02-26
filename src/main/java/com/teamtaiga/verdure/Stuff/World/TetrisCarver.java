@@ -44,16 +44,20 @@ public class TetrisCarver {
 
     private void Carve(List<int[]> piece, int times) {
         List<int[]> newPiece = new ArrayList<>();
+        boolean check = true;
         if (times > 0) {
             for (int[] kernel : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
-                for (int[] cord : piece) {
-                    newPiece.add(VerdureUtil.transformCords(cord, kernel));
-                }
-                if (!new HashSet<>(Positions).containsAll(newPiece)) {
-                    for (int[] newCord : newPiece) {
-                        if (!Positions.contains(newCord)) {
-                            Positions.add(newCord);
+                if (check) {
+                    for (int[] cord : piece) {
+                        newPiece.add(VerdureUtil.transformCords(cord, kernel));
+                    }
+                    if (!VerdureUtil.ArrayAllInList(Positions, newPiece)) {
+                        for (int[] newCord : newPiece) {
+                            if (!VerdureUtil.ArrayInList(Positions, newCord)) {
+                                Positions.add(newCord);
+                            }
                         }
+                        check = false;
                     }
                 }
             }

@@ -45,15 +45,28 @@ public class VerdureUtil {
         return list.stream().anyMatch(a -> Arrays.equals(a, candidate));
     }
 
+    public static boolean ArrayAllInList(List<int[]> list, List<int[]> candidate) {
+        return AAILHelper(list, candidate, 0, candidate.size());
+    }
+    private static boolean AAILHelper(List<int[]> list, List<int[]> candidate, int chosen, int size) {
+        if (chosen >= size) {
+            return true;
+        }
+        else {
+            if (ArrayInList(list, candidate.get(chosen))) {
+                AAILHelper(list, candidate, chosen + 1, size);
+            }
+            else return false;
+        }
+        return false;
+    }
+
     public static int RandomlyNegative(RandomSource rand, int hi) {
         return rand.nextBoolean() ? hi : -hi;
     }
 
     public static int[] transformCords(int[] base, int[] kernel) {
-        for (int i = 0; i < base.length; i++) {
-            base[i] += kernel[i];
-        }
-        return base;
+        return new int[]{base[0]  + kernel[0], base[1] + kernel[1]};
     }
 
     public static int FindNextAvailableY() {
