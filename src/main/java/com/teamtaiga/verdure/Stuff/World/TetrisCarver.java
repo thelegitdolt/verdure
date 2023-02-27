@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TetrisCarver {
-    private final int nodesCount;
     private final List<int[]> Positions;
     private final List<int[]> InitialTetris;
 
     public TetrisCarver(int nodesCount) {
-        this.nodesCount = nodesCount;
         Positions = new ArrayList<>();
         InitialTetris = Positions;
         Positions.add(new int[]{0, 0});

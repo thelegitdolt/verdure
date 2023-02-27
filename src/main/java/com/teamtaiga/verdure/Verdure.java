@@ -3,6 +3,7 @@ package com.teamtaiga.verdure;
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import com.teamtaiga.verdure.Client.Event.Cutout;
+import com.teamtaiga.verdure.Data.tags.VerdureBlockTags;
 import com.teamtaiga.verdure.SpookyStuff.Events.CommonSetup;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
 import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
@@ -54,7 +55,13 @@ public class Verdure {
 
     private void dataSetup(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        ExistingFileHelper helper = event.getExistingFileHelper();
+
+        boolean includeServer = event.includeServer();
+        VerdureBlockTags taggies = new VerdureBlockTags(generator, helper);
+        generator.addProvider(includeServer, taggies);
+
+
 
     }
 
