@@ -29,6 +29,9 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         for (BlockPos pos : InitialHole) {
             level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
         }
+        for (BlockPos pos : ExpandHole(FindBorderOffset(carver.getPositions()), origin, level)) {
+            // stuff
+        }
         return true;
     }
 
