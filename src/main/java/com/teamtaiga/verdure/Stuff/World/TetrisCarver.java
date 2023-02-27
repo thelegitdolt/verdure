@@ -4,7 +4,6 @@ import com.teamtaiga.verdure.Stuff.VerdureUtil;
 import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class TetrisCarver {
@@ -63,11 +62,14 @@ public class TetrisCarver {
             }
             Carve(newPiece, times - 1);
         }
+        else {
+            Centralize();
+        }
     }
 
     private void Centralize() {
-        int big = -8191;
-        int small = 8191;
+        int big = -127;
+        int small = 127;
         int indeX = 0;
         int smalldeX = 0;
         int Z = 0;
@@ -82,8 +84,8 @@ public class TetrisCarver {
                 smalldeX = i;
             }
         }
-        big = -8191;
-        small = 8191;
+        big = -127;
+        small = 127;
         for (int i = 0; i < Positions.size(); i++) {
             if (Positions.get(i)[1] > big) {
                 big = Positions.get(i)[1];

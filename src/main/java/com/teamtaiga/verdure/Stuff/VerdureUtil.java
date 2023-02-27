@@ -12,10 +12,10 @@ import java.util.List;
 
 public class VerdureUtil {
     public static final int[][] DIRECTION_NO_DIAGONALS = new int[][] {
-            new int[]{0, 1},
-            new int[]{0, -1},
             new int[]{1, 0},
-            new int[]{-1, 0}
+            new int[]{-1, 0},
+            new int[]{0, 1},
+            new int[]{0, -1}
     };
     public static final int[][] DIRECTIONS_WITH_DIAGONALS = new int[][] {
             new int[]{0, 1},
@@ -68,6 +68,8 @@ public class VerdureUtil {
     public static int[] transformCords(int[] base, int[] kernel) {
         return new int[]{base[0]  + kernel[0], base[1] + kernel[1]};
     }
+
+
 
     public static int FindNextAvailableY() {
         return 0;
