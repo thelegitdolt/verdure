@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class TetrisCarver {
     private final List<int[]> Positions;
@@ -106,7 +107,7 @@ public class TetrisCarver {
     public List<BlockPos> ConvertToBlockPos(BlockPos origin, int y) {
         List<BlockPos> list = new ArrayList<>();
         for (int[] offsets : Positions) {
-            list.add(new BlockPos(origin.getX() + offsets[0], y, origin.getZ() + offsets[0]));
+            list.add(new BlockPos(origin.getX() + offsets[0], y, origin.getZ() + offsets[1]));
         }
         return list;
     }

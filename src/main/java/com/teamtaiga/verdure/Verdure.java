@@ -9,7 +9,9 @@ import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
 import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
 import com.teamtaiga.verdure.Stuff.World.VerdureGeneration;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.ResourceLoadStateTracker;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -80,5 +82,9 @@ public class Verdure {
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
+    }
+
+    public static ResourceLocation Loc(String hello) {
+        return new ResourceLocation(MOD_ID, hello);
     }
 }
