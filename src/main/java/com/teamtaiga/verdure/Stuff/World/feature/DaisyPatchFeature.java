@@ -62,13 +62,13 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         return minecraft == 0;
     }
 
-    public static int[] generateCoords(RandomSource rand, int spread) {
+    private static int[] generateCoords(RandomSource rand, int spread) {
         int i = VerdureUtil.RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 2);
         int j = VerdureUtil.RandomlyNegative(rand, rand.nextInt(2) + rand.nextInt(2) + spread - 2);
         return new int[]{i, j};
     }
 
-    public static int[][] GenerateDaisyOffset(RandomSource rand, int spread) {
+    private static int[][] GenerateDaisyOffset(RandomSource rand, int spread) {
         int[][] cords = new int[2][2];
         if (rand.nextBoolean()) {
             int[] generated = generateCoords(rand, spread);
@@ -84,7 +84,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         return cords;
     }
 
-    public int SpreadDaisies(WorldGenLevel level, BlockPos pos, RandomSource rand, BlockPos origin, int chance) {
+    private int SpreadDaisies(WorldGenLevel level, BlockPos pos, RandomSource rand, BlockPos origin, int chance) {
         if (chance > 0) {
             boolean notPlaced = true;
             if (rand.nextInt(100) < chance) {
@@ -121,7 +121,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         return 1;
     }
 
-    public boolean isInsideBoundingBox(BlockPos origin, BlockPos isItIdunno) {
+    private boolean isInsideBoundingBox(BlockPos origin, BlockPos isItIdunno) {
         return Math.abs(isItIdunno.getX() - origin.getX()) < Spread + 1|| Math.abs(isItIdunno.getZ() - origin.getX()) < Spread + 1;
     }
 
