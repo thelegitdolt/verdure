@@ -3,6 +3,7 @@ package com.teamtaiga.verdure.Stuff.World;
 import com.teamtaiga.verdure.Stuff.VerdureUtil;
 import net.minecraft.core.BlockPos;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -10,11 +11,13 @@ import java.util.function.BiConsumer;
 public class TetrisCarver {
     private final List<int[]> Positions;
     private final List<int[]> InitialTetris;
+    @Nullable private List<BlockPos> Posses;
 
     public TetrisCarver(int nodesCount) {
         Positions = new ArrayList<>();
         InitialTetris = Positions;
         Positions.add(new int[]{0, 0});
+        Posses = null;
         generateInitialTetris(new int[]{0, 0}, nodesCount);
     }
 
@@ -36,11 +39,15 @@ public class TetrisCarver {
     }
 
     // Carve can only be used once!!!!
-    public void Carve(int times) {
-        Carve(this.InitialTetris, times);
+    public void Carve(int times, BlockPos origin, int y) {
+        Carve(this.InitialTetris, times, origin, y);
     }
 
-    private void Carve(List<int[]> piece, int times) {
+    public List<BlockPos> getPosses() {
+        return this.Posses;
+    }
+
+    private void Carve(List<int[]> piece, int times, BlockPos origin, int y) {
         List<int[]> newPiece = new ArrayList<>();
         boolean check = true;
         if (times > 0) {
@@ -59,10 +66,11 @@ public class TetrisCarver {
                     }
                 }
             }
-            Carve(newPiece, times - 1);
+            Carve(newPiece, times - 1, origin, y);
         }
         else {
             Centralize();
+            ConvertToBlockPos(origin, y);
         }
     }
 
@@ -104,11 +112,11 @@ public class TetrisCarver {
         });
     }
 
-    public List<BlockPos> ConvertToBlockPos(BlockPos origin, int y) {
+    public void ConvertToBlockPos(BlockPos origin, int y) {
         List<BlockPos> list = new ArrayList<>();
         for (int[] offsets : Positions) {
             list.add(new BlockPos(origin.getX() + offsets[0], y, origin.getZ() + offsets[1]));
         }
-        return list;
+        this.Posses = list;
     }
 }

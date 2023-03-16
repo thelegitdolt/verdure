@@ -1,5 +1,6 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.teamtaiga.verdure.Data.VerdureTags;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
@@ -7,6 +8,7 @@ import com.teamtaiga.verdure.Stuff.VerdureUtil;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +38,13 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         RandomSource rand = level.getRandom();
 
         TetrisCarver carver = new TetrisCarver(4);
-        carver.Carve(5);
-        List<BlockPos> InitialHole = carver.ConvertToBlockPos(origin, origin.below(2).getY());
+        carver.Carve(5, origin, origin.below().getY());
+        List<BlockPos> InitialHole = carver.getPosses();
+        assert InitialHole != null;
         for (BlockPos pos : InitialHole) {
             level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
         }
-        List<BlockPos> posses = ExpandHole(FindBorderOffset(carver.getPositions()), origin, level, rand);
+        List<BlockPos> posses = ExpandHole(FindBorderOffset(InitialHole), level, rand);
 
         BoneMealItem.growWaterPlant(ItemStack.EMPTY, (Level) level, origin.below(2), null);
         for (BlockPos pos : InitialHole) {
@@ -54,23 +56,16 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         return true;
     }
 
-    // Find the borders of the previously carved pond
-    // and then determine which the
-    // 0 - +x
-    // 1 - -x
-    // 2 - +z
-    // 3 - -z
-    private HashMap<int[], boolean[]> FindBorderOffset(List<int[]> Pos) {
-        HashMap<int[], boolean[]> borders = new HashMap<>();
-        boolean[] directions = new boolean[4];
-        for (int[] cord : Pos) {
-            for (int i = 0; i < 4; i++) {
-                if (!VerdureUtil.ArrayInList(Pos, VerdureUtil.transformCords(cord, VerdureUtil.DIRECTION_NO_DIAGONALS[i]))) {
-                    directions[i] = true;
-                }
+
+    private HashMap<BlockPos, List<Direction>> FindBorderOffset(List<BlockPos> Pos) {
+        HashMap<BlockPos, List<Direction>> borders = new HashMap<>();
+        List<Direction> directions = new ArrayList<>();
+        for (BlockPos possy : Pos) {
+            for (Direction dir : Direction.Plane.HORIZONTAL) {
+                if (Pos.contains(dir)) directions.add(dir);
             }
-            if (!Arrays.equals(directions, new boolean[]{false, false, false, false})) {
-                borders.put(cord, directions);
+            if (directions.size() > 0) {
+                borders.put(possy, directions);
             }
         }
         return borders;
@@ -78,44 +73,46 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     // expands the hole created by carver
     // then returns a list of blockpos at the border of the pond to cover with sugarcane, dsies and other stuff
-    private List<BlockPos> ExpandHole(HashMap<int[], boolean[]> border, BlockPos origin, WorldGenLevel level, RandomSource rand) {
+    private List<BlockPos> ExpandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level, RandomSource rand) {
         List<BlockPos> Possies = new ArrayList<>();
-        for (Map.Entry<int[], boolean[]> entry : border.entrySet()) {
-            int[] key = entry.getKey();
-            boolean[] val = entry.getValue();
-            BlockPos pos = new BlockPos(origin.getX() + key[0], origin.below().getY(), origin.getZ() + key[1]);
+        for (Map.Entry<BlockPos, List<Direction>> entry : border.entrySet()) {
+            BlockPos pos = entry.getKey();
+            List<Direction> val = entry.getValue();
 
             List<Direction> dirs = rand.nextBoolean() ? List.of(Direction.EAST, Direction.WEST) :
                     List.of(Direction.SOUTH, Direction.NORTH);
             int numsOfCorners = 0;
-            for (int i = 0; i < 4; i++) {
-                if (val[i]) {
-                    level.setBlock(pos.relative(convert(i)), Blocks.WATER.defaultBlockState(), 2);
-                    level.setBlock(pos.relative(convert(i), 2), Blocks.WATER.defaultBlockState(), 2);
-                    Possies.add(pos.relative(convert(i), 3).above());
-                    numsOfCorners++;
+            for (Direction shun : val) {
+                level.setBlock(pos.relative(shun), Blocks.WATER.defaultBlockState(), 2);
+                level.setBlock(pos.relative(shun, 2), Blocks.WATER.defaultBlockState(), 2);
+                Possies.add(pos.relative(shun, 3).above());
+                numsOfCorners++;
+            }
+
+            if (numsOfCorners == 2) {
+                BlockPos corner = pos;
+                for (Direction Dick : val) {
+                    corner = corner.relative(Dick);
                 }
-                if (numsOfCorners == 2) {
-                    BlockPos minecraft = pos;
-                    for (int j = 0; j < 4; j++) {
-                        if (val[j]) {
-                            minecraft = minecraft.relative(convert(j));
-                        }
-                    }
-                    level.setBlock(minecraft, Blocks.WATER.defaultBlockState(), 2);
+                level.setBlock(corner, Blocks.WATER.defaultBlockState(), 2);
+                for (Direction Erect : val) {
+                    Possies.add(corner.relative(Erect).above());
                 }
-                if (numsOfCorners == 3) {
-                    List<BlockPos> toWaterize = new ArrayList<>();
-                    for (Direction dir : ActuallyKillMe(val)) {
-                        if (dir.equals(OhMyGodWhyDoesThisFeatureHaveSoManyFuckingMethods(val))) {
-                            for (Direction dird : ActuallyKillMe(val)) {
-                                 if (dird != dir) toWaterize.add(pos.relative(dir).relative(dird));
-                            }
-                        }
+            }
+            if (numsOfCorners == 3) {
+                HashMap<BlockPos, Direction> corners = new HashMap<>();
+                Direction theOne = GetTOrigin(val);
+                assert theOne != null;
+                for (Direction Shunned : val) {
+                    if (!Shunned.equals(theOne)) {
+                        corners.put(pos.relative(theOne).relative(Shunned), Shunned);
                     }
-                    for (BlockPos waterization : toWaterize) {
-                        level.setBlock(waterization, Blocks.WATER.defaultBlockState(), 2);
-                    }
+                }
+                for (Map.Entry<BlockPos, Direction> entries : corners.entrySet()) {
+                    BlockPos original = entries.getKey();
+                    level.setBlock(original, Blocks.WATER.defaultBlockState(), 2);
+                    Possies.add(original.relative(theOne).above());
+                    Possies.add(original.relative(entries.getValue()).above());
                 }
             }
         }
@@ -132,29 +129,13 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         };
     }
 
-    private static Direction OhMyGodWhyDoesThisFeatureHaveSoManyFuckingMethods(boolean[] bools) {
-        ArrayList<Direction> ThisIsProbablyReallyInefficientButIdontCare = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            if (bools[i]) {
-                ThisIsProbablyReallyInefficientButIdontCare.add(convert(i));
-            }
-        }
-        for (Direction KillMe : ThisIsProbablyReallyInefficientButIdontCare) {
-            if (!ThisIsProbablyReallyInefficientButIdontCare.contains(KillMe.getOpposite())) {
-                return KillMe;
+    private static Direction GetTOrigin(List<Direction> DumDums) {
+        for (Direction dum : DumDums) {
+            if (!DumDums.contains(dum.getOpposite())) {
+                return dum;
             }
         }
         return null;
-    }
-
-    public static List<Direction> ActuallyKillMe(boolean[] a) {
-        List<Direction> b = new ArrayList<>();
-        for (int c = 0; c<4; c++) {
-            if (a[c]) {
-                b.add(convert(c));
-            }
-        }
-        return b;
     }
 
     private void DecorateFoliage(List<BlockPos> possies, WorldGenLevel level, RandomSource rand) {
