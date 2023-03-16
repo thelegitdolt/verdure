@@ -1,14 +1,11 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.teamtaiga.verdure.Data.VerdureTags;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
-import com.teamtaiga.verdure.Stuff.VerdureUtil;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
@@ -33,16 +30,20 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        for (int i = 0; i < 50; i++) {
+            System.out.println("hello hi dolt here wassup");
+        }
         WorldGenLevel level = context.level();
         BlockPos origin = context.origin();
         RandomSource rand = level.getRandom();
 
         TetrisCarver carver = new TetrisCarver(4);
-        carver.Carve(5, origin, origin.below().getY());
+        carver.Carve(5, origin, origin.below(2).getY());
         List<BlockPos> InitialHole = carver.getPosses();
         assert InitialHole != null;
         for (BlockPos pos : InitialHole) {
             level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
+            level.setBlock(pos.above(), Blocks.WATER.defaultBlockState(), 2);
         }
         List<BlockPos> posses = ExpandHole(FindBorderOffset(InitialHole), level, rand);
 
@@ -62,7 +63,9 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         List<Direction> directions = new ArrayList<>();
         for (BlockPos possy : Pos) {
             for (Direction dir : Direction.Plane.HORIZONTAL) {
-                if (Pos.contains(dir)) directions.add(dir);
+                if (Pos.contains(possy.relative(dir))) {
+                    directions.add(dir);
+                }
             }
             if (directions.size() > 0) {
                 borders.put(possy, directions);
@@ -79,13 +82,11 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             BlockPos pos = entry.getKey();
             List<Direction> val = entry.getValue();
 
-            List<Direction> dirs = rand.nextBoolean() ? List.of(Direction.EAST, Direction.WEST) :
-                    List.of(Direction.SOUTH, Direction.NORTH);
             int numsOfCorners = 0;
             for (Direction shun : val) {
-                level.setBlock(pos.relative(shun), Blocks.WATER.defaultBlockState(), 2);
-                level.setBlock(pos.relative(shun, 2), Blocks.WATER.defaultBlockState(), 2);
-                Possies.add(pos.relative(shun, 3).above());
+                level.setBlock(pos.relative(shun).above(), Blocks.WATER.defaultBlockState(), 2);
+                level.setBlock(pos.relative(shun, 2).above(), Blocks.WATER.defaultBlockState(), 2);
+                Possies.add(pos.relative(shun, 3).above(2));
                 numsOfCorners++;
             }
 
@@ -117,16 +118,6 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             }
         }
         return Possies;
-    }
-
-    private static Direction convert(int i) {
-        return switch (i) {
-            case 0 -> Direction.EAST;
-            case 1 -> Direction.WEST;
-            case 2 -> Direction.SOUTH;
-            case 3 -> Direction.NORTH;
-            default -> null;
-        };
     }
 
     private static Direction GetTOrigin(List<Direction> DumDums) {
@@ -162,7 +153,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     private void PlaceGrass(WorldGenLevel level, BlockPos pos, DaisyBlock daisy) {
 
     }
-// /place feature verdure:pond_big
+
     private void PlaceRocks(WorldGenLevel level, BlockPos pos, DaisyBlock daisy) {
 
     }
