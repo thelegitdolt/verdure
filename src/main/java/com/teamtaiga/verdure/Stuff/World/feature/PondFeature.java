@@ -77,30 +77,29 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     // expands the hole created by carver
     // then returns a list of blockpos at the border of the pond to cover with sugarcane, dsies and other stuff
     private List<BlockPos> ExpandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level, RandomSource rand) {
-        List<BlockPos> Possies = new ArrayList<>();
+        List<BlockPos> ToAddFoliage = new ArrayList<>();
+        List<BlockPos> ToFillWater = new ArrayList<>();
         for (Map.Entry<BlockPos, List<Direction>> entry : border.entrySet()) {
             BlockPos pos = entry.getKey();
             List<Direction> val = entry.getValue();
 
-            int numsOfCorners = 0;
             for (Direction shun : val) {
-                level.setBlock(pos.relative(shun).above(), Blocks.WATER.defaultBlockState(), 2);
-                level.setBlock(pos.relative(shun, 2).above(), Blocks.WATER.defaultBlockState(), 2);
-                Possies.add(pos.relative(shun, 3).above(2));
-                numsOfCorners++;
+                ToFillWater.add(pos.relative(shun).above());
+                ToFillWater.add(pos.relative(shun, 2));
+                ToAddFoliage.add(pos.relative(shun, 3).above(2));
             }
 
-            if (numsOfCorners == 2) {
+            if (val.size() == 2) {
                 BlockPos corner = pos;
-                for (Direction Dick : val) {
-                    corner = corner.relative(Dick);
+                for (Direction dirac : val) {
+                    corner = corner.relative(dirac);
                 }
-                level.setBlock(corner, Blocks.WATER.defaultBlockState(), 2);
-                for (Direction Erect : val) {
-                    Possies.add(corner.relative(Erect).above());
+                ToFillWater.add(corner);
+                for (Direction erwin : val) {
+                    ToAddFoliage.add(corner.relative(erwin).above());
                 }
             }
-            if (numsOfCorners == 3) {
+            if (val.size() == 3) {
                 HashMap<BlockPos, Direction> corners = new HashMap<>();
                 Direction theOne = GetTOrigin(val);
                 assert theOne != null;
@@ -111,13 +110,19 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 }
                 for (Map.Entry<BlockPos, Direction> entries : corners.entrySet()) {
                     BlockPos original = entries.getKey();
-                    level.setBlock(original, Blocks.WATER.defaultBlockState(), 2);
-                    Possies.add(original.relative(theOne).above());
-                    Possies.add(original.relative(entries.getValue()).above());
+                    ToFillWater.add(original);
+                    ToAddFoliage.add(original.relative(theOne).above());
+                    ToAddFoliage.add(original.relative(entries.getValue()).above());
                 }
             }
+            smooth(ToFillWater, ToAddFoliage);
+            for (BlockPos fill : ToFillWater) level.setBlock(fill, Blocks.WATER.defaultBlockState(), 2);
         }
-        return Possies;
+        return ToAddFoliage;
+    }
+
+    private void smooth(List<BlockPos> toWater, List<BlockPos> toBorder) {
+
     }
 
     private static Direction GetTOrigin(List<Direction> DumDums) {
