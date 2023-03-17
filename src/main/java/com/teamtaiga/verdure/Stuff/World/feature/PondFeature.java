@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.teamtaiga.verdure.Data.VerdureTags;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
+import com.teamtaiga.verdure.Verdure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -60,15 +61,15 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     private HashMap<BlockPos, List<Direction>> FindBorderOffset(List<BlockPos> Pos) {
         HashMap<BlockPos, List<Direction>> borders = new HashMap<>();
-        List<Direction> directions = new ArrayList<>();
         for (BlockPos possy : Pos) {
+            List<Direction> directions = new ArrayList<>();
             for (Direction dir : Direction.Plane.HORIZONTAL) {
                 if (Pos.contains(possy.relative(dir))) {
                     directions.add(dir);
                 }
             }
             if (directions.size() > 0) {
-                borders.put(possy, directions);
+                borders.put(possy.above(), directions);
             }
         }
         return borders;
@@ -84,9 +85,19 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             List<Direction> val = entry.getValue();
 
             for (Direction shun : val) {
-                ToFillWater.add(pos.relative(shun).above());
+                ToFillWater.add(pos.relative(shun));
                 ToFillWater.add(pos.relative(shun, 2));
-                ToAddFoliage.add(pos.relative(shun, 3).above(2));
+                ToAddFoliage.add(pos.relative(shun, 3).above());
+            }
+
+            Verdure.LOGGER.info( "DEBUGGING HI");
+            for (Direction DimSum : val) {
+                switch (DimSum) {
+                    case EAST -> Verdure.LOGGER.info("east");
+                    case WEST -> Verdure.LOGGER.info("west");
+                    case SOUTH -> Verdure.LOGGER.info("south");
+                    case NORTH -> Verdure.LOGGER.info("north");
+                }
             }
 
             if (val.size() == 2) {
@@ -94,9 +105,10 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 for (Direction dirac : val) {
                     corner = corner.relative(dirac);
                 }
+
                 ToFillWater.add(corner);
-                for (Direction erwin : val) {
-                    ToAddFoliage.add(corner.relative(erwin).above());
+                for (Direction Dirac : val) {
+                    ToAddFoliage.add(corner.relative(Dirac));
                 }
             }
             if (val.size() == 3) {
@@ -110,7 +122,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 }
                 for (Map.Entry<BlockPos, Direction> entries : corners.entrySet()) {
                     BlockPos original = entries.getKey();
-                    ToFillWater.add(original);
+                    ToFillWater.add(original.above());
                     ToAddFoliage.add(original.relative(theOne).above());
                     ToAddFoliage.add(original.relative(entries.getValue()).above());
                 }
@@ -121,6 +133,9 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         return ToAddFoliage;
     }
 
+    // Alright diggity dougs let's figure out the god damn algorithm shall we
+    // remove the block if it's a peninsula (surrounded three sides by land)
+    // remove one of the blocks if it's a zigzag? i guess?
     private void smooth(List<BlockPos> toWater, List<BlockPos> toBorder) {
 
     }

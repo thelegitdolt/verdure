@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 public class Verdure {
     public static final String MOD_ID = "verdure";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
     public Verdure() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
