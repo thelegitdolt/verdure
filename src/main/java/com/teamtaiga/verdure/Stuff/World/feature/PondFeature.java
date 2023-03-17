@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.teamtaiga.verdure.Data.VerdureTags;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
-import com.teamtaiga.verdure.Verdure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -48,6 +47,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         }
         List<BlockPos> posses = ExpandHole(FindBorderOffset(InitialHole), level, rand);
 
+
         BoneMealItem.growWaterPlant(ItemStack.EMPTY, (Level) level, origin.below(2), null);
         for (BlockPos pos : InitialHole) {
             if (rand.nextInt(12) == 0) {
@@ -90,16 +90,6 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 ToAddFoliage.add(pos.relative(shun, 3).above());
             }
 
-            Verdure.LOGGER.info( "DEBUGGING HI. Size: " + val.size());
-            for (Direction DimSum : val) {
-                switch (DimSum) {
-                    case EAST -> Verdure.LOGGER.info("east");
-                    case WEST -> Verdure.LOGGER.info("west");
-                    case SOUTH -> Verdure.LOGGER.info("south");
-                    case NORTH -> Verdure.LOGGER.info("north");
-                }
-            }
-
             if (val.size() == 2) {
                 BlockPos corner = pos;
                 for (Direction dirac : val) {
@@ -108,7 +98,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
                 ToFillWater.add(corner);
                 for (Direction Dirac : val) {
-                    ToAddFoliage.add(corner.relative(Dirac));
+                    ToAddFoliage.add(corner.relative(Dirac).above());
                 }
             }
             if (val.size() == 3) {
@@ -122,22 +112,14 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 }
                 for (Map.Entry<BlockPos, Direction> entries : corners.entrySet()) {
                     BlockPos original = entries.getKey();
-                    ToFillWater.add(original.above());
+                    ToFillWater.add(original);
                     ToAddFoliage.add(original.relative(theOne).above());
                     ToAddFoliage.add(original.relative(entries.getValue()).above());
                 }
             }
-            smooth(ToFillWater, ToAddFoliage);
             for (BlockPos fill : ToFillWater) level.setBlock(fill, Blocks.WATER.defaultBlockState(), 2);
         }
         return ToAddFoliage;
-    }
-
-    // Alright diggity dougs let's figure out the god damn algorithm shall we
-    // remove the block if it's a peninsula (surrounded three sides by land)
-    // remove one of the blocks if it's a zigzag? i guess?
-    private void smooth(List<BlockPos> toWater, List<BlockPos> toBorder) {
-
     }
 
     private static Direction GetTOrigin(List<Direction> DumDums) {
