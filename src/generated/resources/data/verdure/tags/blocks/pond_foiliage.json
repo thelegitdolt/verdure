@@ -1,0 +1,11 @@
+{
+  "values": [
+    "minecraft:grass",
+    "verdure:white_daisies",
+    "minecraft:sugar_cane",
+    {
+      "id": "farmersdelight:wild_carrots",
+      "required": false
+    }
+  ]
+}

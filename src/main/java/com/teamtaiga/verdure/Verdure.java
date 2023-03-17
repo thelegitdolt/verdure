@@ -3,6 +3,7 @@ package com.teamtaiga.verdure;
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import com.teamtaiga.verdure.Client.Event.Cutout;
+import com.teamtaiga.verdure.Data.LootTableManager;
 import com.teamtaiga.verdure.Data.tags.VerdureBlockTags;
 import com.teamtaiga.verdure.SpookyStuff.Events.CommonSetup;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
@@ -61,7 +62,10 @@ public class Verdure {
 
         boolean includeServer = event.includeServer();
         VerdureBlockTags taggies = new VerdureBlockTags(generator, helper);
+        LootTableManager looties = new LootTableManager(generator);
+
         generator.addProvider(includeServer, taggies);
+        generator.addProvider(includeServer, looties);
 
 
 
