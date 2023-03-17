@@ -64,7 +64,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         for (BlockPos possy : Pos) {
             List<Direction> directions = new ArrayList<>();
             for (Direction dir : Direction.Plane.HORIZONTAL) {
-                if (Pos.contains(possy.relative(dir))) {
+                if (!Pos.contains(possy.relative(dir))) {
                     directions.add(dir);
                 }
             }
@@ -90,7 +90,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 ToAddFoliage.add(pos.relative(shun, 3).above());
             }
 
-            Verdure.LOGGER.info( "DEBUGGING HI");
+            Verdure.LOGGER.info( "DEBUGGING HI. Size: " + val.size());
             for (Direction DimSum : val) {
                 switch (DimSum) {
                     case EAST -> Verdure.LOGGER.info("east");
