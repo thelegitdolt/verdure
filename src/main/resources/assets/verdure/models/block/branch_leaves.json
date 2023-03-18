@@ -2,6 +2,7 @@
 	"textures": {
 		"particle": "#branch"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"from": [8, 0, 0],

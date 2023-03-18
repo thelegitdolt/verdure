@@ -1,5 +1,6 @@
 {
   "parent": "verdure:block/branch_leaves",
+  "render_type": "minecraft:cutout",
   "textures": {
     "branch": "verdure:block/oak_branch",
     "leaves": "verdure:block/oak_branch_leaves"

@@ -2,7 +2,6 @@ package com.teamtaiga.verdure;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import com.teamtaiga.verdure.Client.Event.Cutout;
 import com.teamtaiga.verdure.Data.LootTableManager;
 import com.teamtaiga.verdure.Data.tags.VerdureBlockTags;
 import com.teamtaiga.verdure.SpookyStuff.Events.CommonSetup;
@@ -10,7 +9,6 @@ import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
 import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
 import com.teamtaiga.verdure.Stuff.World.VerdureGeneration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ResourceLoadStateTracker;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -46,7 +44,6 @@ public class Verdure {
         VerdureGeneration.FEATURES.register(bus);
         VerdurePlacementModifiers.PLACEMENT_MODIFIERS.register(bus);
         VerdureBiomeModifier.BIOME_MODIFIER_SERIALIZERS.register(bus);
-        bus.addListener(Cutout::init);
         bus.addListener(CommonSetup::init);
         bus.addListener(this::dataSetup);
     }

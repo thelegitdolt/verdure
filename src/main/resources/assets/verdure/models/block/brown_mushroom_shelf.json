@@ -1,10 +1,12 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "verdure:block/brown_mushroom_shelf",
 		"particle": "verdure:block/brown_mushroom_shelf"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"from": [8, 7, 0],

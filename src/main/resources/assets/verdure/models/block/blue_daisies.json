@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "verdure:block/blue_daisies_top_1",
 		"1": "verdure:block/blue_daisies_top_2",

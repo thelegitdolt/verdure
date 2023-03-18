@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"ambientocclusion": false,
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"cross": "verdure:block/white_morning_glory",
 		"particle": "verdure:block/white_morning_glory"

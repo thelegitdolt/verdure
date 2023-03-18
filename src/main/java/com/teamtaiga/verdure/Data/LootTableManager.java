@@ -91,7 +91,7 @@ public class LootTableManager extends LootTableProvider {
 
         protected LootTable.Builder createRockDrops(Block block) {
             return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(applyExplosionDecay(block, LootItem.lootTableItem(block).apply(List.of(2, 3),
-                    (Blocked) -> { return SetItemCountFunction.setCount(ConstantValue.exactly((float) Blocked)).
+                    (Blocked) -> { return SetItemCountFunction.setCount(ConstantValue.exactly((float)Blocked.intValue())).
                             when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block).setProperties(StatePropertiesPredicate.Builder.properties().
                                     hasProperty(RockBlock.LEVEL, Blocked)));
             }))));

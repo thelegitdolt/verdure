@@ -1,5 +1,6 @@
 {
   "ambientocclusion": false,
+  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "verdure:block/daisies_full",
     "daisy": "verdure:block/daisies_full"

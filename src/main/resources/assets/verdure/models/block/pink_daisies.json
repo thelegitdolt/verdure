@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"3": "verdure:block/pink_daisies_side",
 		"4": "verdure:block/pink_daisies_top_1",
