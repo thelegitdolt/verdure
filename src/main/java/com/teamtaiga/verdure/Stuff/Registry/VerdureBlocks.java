@@ -48,7 +48,7 @@ public class VerdureBlocks {
 
     static class Props {
         public static final BlockBehaviour.Properties CLOVER = BlockBehaviour.Properties.of(Material.REPLACEABLE_PLANT, MaterialColor.COLOR_GREEN).noCollission().instabreak().sound(SoundType.GRASS);
-        public static final BlockBehaviour.Properties ROCK = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).instabreak().sound(SoundType.STONE).strength(1.5F, 6.0F);
+        public static final BlockBehaviour.Properties ROCK = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).sound(SoundType.STONE).strength(1.5F, 6.0F);
 
     }
 }

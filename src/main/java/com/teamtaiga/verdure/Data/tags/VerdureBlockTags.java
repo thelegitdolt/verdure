@@ -1,7 +1,5 @@
 package com.teamtaiga.verdure.Data.tags;
 
-import com.teamtaiga.verdure.Data.VerdureTags;
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
 import com.teamtaiga.verdure.Verdure;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -22,6 +20,7 @@ public class VerdureBlockTags extends BlockTagsProvider {
     public void addTags() {
         this.tag(VerdureTags.POND_FOILIAGE).add(Blocks.GRASS, WHITE_DAISIES.get(), Blocks.SUGAR_CANE)
                 .addOptional(new ResourceLocation("farmersdelight", "wild_carrots"));
+        this.tag(VerdureTags.DAISIES_PLACEABLE_ON).addTag(BlockTags.OVERWORLD_NATURAL_LOGS).addTag(BlockTags.DIRT);
 
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ROCK.get());

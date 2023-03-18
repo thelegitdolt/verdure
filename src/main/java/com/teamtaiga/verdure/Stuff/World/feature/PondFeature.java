@@ -1,7 +1,7 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Data.VerdureTags;
+import com.teamtaiga.verdure.Data.tags.VerdureTags;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
