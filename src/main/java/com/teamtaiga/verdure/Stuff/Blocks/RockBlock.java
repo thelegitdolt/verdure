@@ -16,7 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class RockBlock extends Block {
+public class RockBlock extends Block implements SimpleWaterloggedBlock{
     // todo: make waterloggable
     protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D);
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 2);;

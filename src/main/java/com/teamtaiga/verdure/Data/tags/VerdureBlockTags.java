@@ -1,6 +1,6 @@
 package com.teamtaiga.verdure.Data.tags;
 
-import com.teamtaiga.verdure.Verdure;
+import com.teamtaiga.verdure.Util.Verdure;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;

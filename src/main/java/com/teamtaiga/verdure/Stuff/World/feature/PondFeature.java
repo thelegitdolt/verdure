@@ -1,9 +1,9 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Data.tags.VerdureTags;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
+import com.teamtaiga.verdure.Util.VerdureUtil;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,12 +12,12 @@ import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,41 +129,56 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     private void DecorateFoliage(List<BlockPos> possies, WorldGenLevel level, RandomSource rand) {
+        HashMap<BlockPos, BlockState> placing = new HashMap<>();
         int feature = 0;
         while (feature < 4) {
             BlockPos toPos = new BlockPos(1, 1, 1);
             // determine what it is
-            switch (rand.nextInt(5)) {
-                case 0 -> PlaceDaisy(level, toPos, (DaisyBlock) VerdureBlocks.WHITE_DAISIES.get());
-                case 1 -> PlaceSugarcane(level, rand, toPos);
-                case 2 -> PlaceGrass(level, rand, toPos);
-                case 3 -> PlaceRocks(level, rand, toPos);
-                case 4 -> PlaceMisc(level, rand, toPos);
+            switch (rand.nextInt(4)) {
+                case 0 -> PlaceDaisy(toPos, (DaisyBlock) VerdureBlocks.WHITE_DAISIES.get(), placing);
+                case 1 -> PlaceSugarcane(rand, toPos, placing);
+                case 2 -> PlaceGrass(level, rand, toPos, possies, placing, 4);
+                case 3 -> PlaceRocks(rand, toPos, placing);
             }
             if (rand.nextInt(5) < 4) feature++;
         }
     }
 
-    private void PlaceDaisy(WorldGenLevel level, BlockPos possies, DaisyBlock daisy) {
+    private void PlaceDaisy(BlockPos possies, DaisyBlock daisy, HashMap<BlockPos, BlockState> adding) {
 
     }
 
-    private void PlaceSugarcane(WorldGenLevel level, RandomSource rand, BlockPos pos) {
-        for (int i = 0; i < rand.nextInt(2, 4); i++) {
-            level.setBlock(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState(), 2);
+    private void PlaceSugarcane(RandomSource rand, BlockPos pos, HashMap<BlockPos, BlockState> adding) {
+        for (int i = rand.nextInt(3, 4); i == 0; i--) {
+            for (int j = 0; j < rand.nextInt(2, 4); i++) {
+                adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState());
+            }
         }
     }
 
-    private void PlaceGrass(WorldGenLevel level, RandomSource random, BlockPos pos) {
-
+    private void PlaceGrass(WorldGenLevel level, RandomSource rand, BlockPos pos, List<BlockPos> canHave, HashMap<BlockPos, BlockState> adding, int times) {
+        if (times > 0) {
+            if (!adding.containsKey(pos)) {
+                if (rand.nextInt(4) == 0) {
+                    VerdureUtil.putDoubleInMap(adding, pos, (DoublePlantBlock) Blocks.TALL_GRASS);
+                } else {
+                    adding.put(pos, Blocks.GRASS.defaultBlockState());
+                }
+            }
+            if (rand.nextInt(8) != 0) {
+                adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
+            }
+        }
+        for (Direction direction : Direction.Plane.HORIZONTAL.shuffledCopy(rand)) {
+            BlockPos newerPos = pos.relative(direction);
+            if (canHave.contains(newerPos) && !adding.containsKey(newerPos) && Blocks.GRASS.canSurvive(Blocks.GRASS.defaultBlockState(), level, newerPos)) {
+                PlaceGrass(level, rand, newerPos, canHave, adding, times - rand.nextInt(1, 2));
+            }
+        }
     }
 
-    private void PlaceRocks(WorldGenLevel level, RandomSource rand, BlockPos pos) {
+
+    private void PlaceRocks(RandomSource rand, BlockPos pos, HashMap<BlockPos, BlockState> adding) {
 
     }
-
-    private void PlaceMisc(WorldGenLevel level, RandomSource rand, BlockPos pos) {
-        List<Block> PossibleBlocks = ForgeRegistries.BLOCKS.tags().getTag(VerdureTags.POND_FOILIAGE).stream().toList();
-    }
-
 }

@@ -3,7 +3,7 @@ package com.teamtaiga.verdure.Data;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
-import com.teamtaiga.verdure.Verdure;
+import com.teamtaiga.verdure.Util.Verdure;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -14,7 +14,6 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -63,9 +62,9 @@ public class LootTableManager extends LootTableProvider {
 
         @Override
         public void addTables() {
-            this.add(WHITE_DAISIES.get(), (block) -> createMultifaceBlockDrops(block, MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.SHEARS))));
-            this.add(BLUE_DAISIES.get(), (block) -> createMultifaceBlockDrops(block, MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.SHEARS))));
-            this.add(PINK_DAISIES.get(), (block) -> createMultifaceBlockDrops(block, MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.SHEARS))));
+            this.add(WHITE_DAISIES.get(), (block) -> createMultifaceBlockDrops(block, HAS_SHEARS));
+            this.add(BLUE_DAISIES.get(), (block) -> createMultifaceBlockDrops(block, HAS_SHEARS));
+            this.add(PINK_DAISIES.get(), (block) -> createMultifaceBlockDrops(block, HAS_SHEARS));
 
             this.add(ROCK.get(), this::createRockDrops);
 
@@ -90,8 +89,8 @@ public class LootTableManager extends LootTableProvider {
         }
 
         protected LootTable.Builder createRockDrops(Block block) {
-            return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(applyExplosionDecay(block, LootItem.lootTableItem(block).apply(List.of(2, 3),
-                    (Blocked) -> { return SetItemCountFunction.setCount(ConstantValue.exactly((float)Blocked.intValue())).
+            return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(applyExplosionDecay(block, LootItem.lootTableItem(block).apply(List.of(1, 2),
+                    (Blocked) -> { return SetItemCountFunction.setCount(ConstantValue.exactly((float) Blocked.intValue() + 1)).
                             when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block).setProperties(StatePropertiesPredicate.Builder.properties().
                                     hasProperty(RockBlock.LEVEL, Blocked)));
             }))));

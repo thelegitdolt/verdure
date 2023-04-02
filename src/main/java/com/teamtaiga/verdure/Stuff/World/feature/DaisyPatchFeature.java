@@ -1,7 +1,7 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Stuff.VerdureUtil;
+import com.teamtaiga.verdure.Util.VerdureUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import static com.teamtaiga.verdure.Stuff.VerdureUtil.DIRECTIONS_WITH_DIAGONALS;
+import static com.teamtaiga.verdure.Util.VerdureUtil.DIRECTIONS_WITH_DIAGONALS;
 
 public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
     private final DoublePlantBlock Tall;

@@ -3,7 +3,7 @@ package com.teamtaiga.verdure.Stuff.Registry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamtaiga.verdure.Stuff.World.AddFeaturesByFilterBiomeModifier;
-import com.teamtaiga.verdure.Verdure;
+import com.teamtaiga.verdure.Util.Verdure;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;

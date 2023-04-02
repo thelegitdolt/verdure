@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
 import com.teamtaiga.verdure.Stuff.World.feature.DaisyPatchFeature;
 import com.teamtaiga.verdure.Stuff.World.feature.PondFeature;
-import com.teamtaiga.verdure.Verdure;
+import com.teamtaiga.verdure.Util.Verdure;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
@@ -24,7 +24,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.io.ObjectInputFilter;
 import java.util.function.Supplier;
 
 public class VerdureGeneration {

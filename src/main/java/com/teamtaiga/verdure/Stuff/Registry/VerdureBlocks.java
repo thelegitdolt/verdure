@@ -1,13 +1,12 @@
 package com.teamtaiga.verdure.Stuff.Registry;
 
-import com.teamabnormals.blueprint.common.block.BlueprintFlowerBlock;
 import com.teamabnormals.blueprint.common.block.BlueprintTallFlowerBlock;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
 import com.teamtaiga.verdure.Stuff.Blocks.CarpetFlowerBlock;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
-import com.teamtaiga.verdure.Verdure;
+import com.teamtaiga.verdure.Util.Verdure;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.*;

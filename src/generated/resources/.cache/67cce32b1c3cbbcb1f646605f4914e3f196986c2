@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-17T16:21:02.625117	LootTables
+// 1.19.2	2023-04-02T08:58:22.844115	LootTables
 ba14eeb7a30ff0ebeacebfca3466512ea21244d7 data/verdure/loot_tables/blocks/blue_daisies.json
 a6a553056b4bc739e070ccedc389befb6d07f323 data/verdure/loot_tables/blocks/blue_morning_glory.json
 43d7a5240a6d5646a952edf63680aa454b4cd3c9 data/verdure/loot_tables/blocks/butterfly_orchid.json
@@ -9,7 +9,7 @@ d30e689f6b88cb0fcf966b29a19849a22a0ea16f data/verdure/loot_tables/blocks/frosty_
 ab9be6a3de486f0e12f50b9af23fd3494f9f08e1 data/verdure/loot_tables/blocks/pasture_perennials.json
 2318e470116c29666b170de4d07da107d37bd96f data/verdure/loot_tables/blocks/pink_daisies.json
 2723b2851faecee750f4aa2265efda700fe4bc90 data/verdure/loot_tables/blocks/purple_morning_glory.json
-b44ceab6a68e478f240fce70cdc4d6876deddea7 data/verdure/loot_tables/blocks/rock.json
+ce2d889eeeb5e357ddeed79410b187a56d2a63a3 data/verdure/loot_tables/blocks/rock.json
 4a02b2ea4a32942d23ca259121786dee5400d338 data/verdure/loot_tables/blocks/undergrowth_perennials.json
 1bb378886d821920445b9d7112113da3722307cc data/verdure/loot_tables/blocks/white_daisies.json
 992ac240a6f5d77cfcd9f2d581276352e121cfdf data/verdure/loot_tables/blocks/white_morning_glory.json

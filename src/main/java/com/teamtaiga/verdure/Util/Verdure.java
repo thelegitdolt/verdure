@@ -1,4 +1,4 @@
-package com.teamtaiga.verdure;
+package com.teamtaiga.verdure.Util;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;

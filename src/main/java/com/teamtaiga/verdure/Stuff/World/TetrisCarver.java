@@ -1,12 +1,11 @@
 package com.teamtaiga.verdure.Stuff.World;
 
-import com.teamtaiga.verdure.Stuff.VerdureUtil;
+import com.teamtaiga.verdure.Util.VerdureUtil;
 import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class TetrisCarver {
     private final List<int[]> Positions;
