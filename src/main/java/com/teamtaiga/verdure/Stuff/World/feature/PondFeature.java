@@ -1,20 +1,17 @@
 package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
 import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
-import com.teamtaiga.verdure.Util.VerdureUtil;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
+import com.teamtaiga.verdure.Util.VerdureUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,7 +19,10 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -45,7 +45,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
             level.setBlock(pos.above(), Blocks.WATER.defaultBlockState(), 2);
         }
-        DecorateFoliage(ExpandHole(FindBorderOffset(InitialHole), level, rand), level, rand);
+        DecorateFoliage(ExpandHole(FindBorderOffset(InitialHole), level), level, rand);
 
         BoneMealItem.growWaterPlant(ItemStack.EMPTY, (Level) level, origin.below(2), null);
         for (BlockPos pos : InitialHole) {
@@ -76,7 +76,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     // expands the hole created by carver
     // then returns a list of blockpos at the border of the pond to cover with sugarcane, dsies and other stuff
-    private List<BlockPos> ExpandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level, RandomSource rand) {
+    private List<BlockPos> ExpandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level) {
         List<BlockPos> ToAddFoliage = new ArrayList<>();
         List<BlockPos> ToFillWater = new ArrayList<>();
         for (Map.Entry<BlockPos, List<Direction>> entry : border.entrySet()) {
@@ -134,20 +134,20 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         HashMap<BlockPos, BlockState> placing = new HashMap<>();
         int feature = 0;
         while (feature < 4) {
-            BlockPos toPos = new BlockPos(1, 1, 1);
-//            determine what it is
-//            switch (rand.nextInt(4)) {
-//                case 0 -> PlaceDaisy(toPos, (DaisyBlock) VerdureBlocks.WHITE_DAISIES.get(), placing);
-//                case 1 -> PlaceSugarcane(rand, toPos, placing);
-//                case 2 -> PlaceGrass(level, rand, toPos, possies, placing, 4);
-//                case 3 -> PlaceRocks(rand, toPos, placing);
-//            }
+            BlockPos toPos = possies.get(rand.nextInt(possies.size()));
+            List<Object> parameters = List.of(
+                    level, rand, toPos, possies, placing, 5
+            );
+            int num = rand.nextInt(4);
+            if (rand.nextInt(4) < 3) {
+                FOLIAGE_PLACER_TYPES.get(num).accept(parameters);
+            }
+            else PlaceSugarcane(rand, toPos, placing);
             if (rand.nextInt(5) < 4) feature++;
         }
-    }
-
-    private void PlaceDaisy(BlockPos possies, DaisyBlock daisy, HashMap<BlockPos, BlockState> adding) {
-
+        for (Map.Entry<BlockPos, BlockState> entries : placing.entrySet()) {
+            level.setBlock(entries.getKey(), entries.getValue(), 2);
+        }
     }
 
     private void PlaceSugarcane(RandomSource rand, BlockPos pos, HashMap<BlockPos, BlockState> adding) {
@@ -158,17 +158,10 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
-    private final List<Consumer<List<Object>>> FoliagePlacerList = List.of(
-        NewFeatureConsumer((rand, state) -> {
-            state.add(0, rand.nextInt(4) == 0 ? Blocks.GRASS.defaultBlockState() : Blocks.TALL_GRASS.defaultBlockState());
-        }),
-        NewFeatureConsumer((rand, state) -> {
-            state.add(0, VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, rand.nextInt(3)));
-        }),
-        NewFeatureConsumer((rand, state) -> {
-
-        })
-
+    private final List<Consumer<List<Object>>> FOLIAGE_PLACER_TYPES = List.of(
+        NewFeatureConsumer((rand, state) -> state.add(0, rand.nextInt(4) == 0 ? Blocks.GRASS.defaultBlockState() : Blocks.TALL_GRASS.defaultBlockState())),
+        NewFeatureConsumer((rand, state) -> state.add(0, VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, rand.nextInt(3)))),
+        NewFeatureConsumer((rand, state) -> state.add(0, VerdureBlocks.WHITE_DAISIES.get().defaultBlockState()))
     );
 
     private Consumer<List<Object>> NewFeatureConsumer(BiConsumer<RandomSource, List<BlockState>> Stater) {
