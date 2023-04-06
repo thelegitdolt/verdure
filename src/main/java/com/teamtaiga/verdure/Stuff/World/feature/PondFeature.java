@@ -2,16 +2,19 @@ package com.teamtaiga.verdure.Stuff.World.feature;
 
 import com.mojang.serialization.Codec;
 import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
+import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
 import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
 import com.teamtaiga.verdure.Util.VerdureUtil;
 import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,10 +22,9 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class PondFeature extends Feature<NoneFeatureConfiguration> {
     public PondFeature(Codec<NoneFeatureConfiguration> config) {
@@ -133,13 +135,13 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         int feature = 0;
         while (feature < 4) {
             BlockPos toPos = new BlockPos(1, 1, 1);
-            // determine what it is
-            switch (rand.nextInt(4)) {
-                case 0 -> PlaceDaisy(toPos, (DaisyBlock) VerdureBlocks.WHITE_DAISIES.get(), placing);
-                case 1 -> PlaceSugarcane(rand, toPos, placing);
-                case 2 -> PlaceGrass(level, rand, toPos, possies, placing, 4);
-                case 3 -> PlaceRocks(rand, toPos, placing);
-            }
+//            determine what it is
+//            switch (rand.nextInt(4)) {
+//                case 0 -> PlaceDaisy(toPos, (DaisyBlock) VerdureBlocks.WHITE_DAISIES.get(), placing);
+//                case 1 -> PlaceSugarcane(rand, toPos, placing);
+//                case 2 -> PlaceGrass(level, rand, toPos, possies, placing, 4);
+//                case 3 -> PlaceRocks(rand, toPos, placing);
+//            }
             if (rand.nextInt(5) < 4) feature++;
         }
     }
@@ -156,29 +158,50 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
-    private void PlaceGrass(WorldGenLevel level, RandomSource rand, BlockPos pos, List<BlockPos> canHave, HashMap<BlockPos, BlockState> adding, int times) {
-        if (times > 0) {
-            if (!adding.containsKey(pos)) {
-                if (rand.nextInt(4) == 0) {
-                    VerdureUtil.putDoubleInMap(adding, pos, (DoublePlantBlock) Blocks.TALL_GRASS);
-                } else {
-                    adding.put(pos, Blocks.GRASS.defaultBlockState());
+    private final List<Consumer<List<Object>>> FoliagePlacerList = List.of(
+        NewFeatureConsumer((rand, state) -> {
+            state.add(0, rand.nextInt(4) == 0 ? Blocks.GRASS.defaultBlockState() : Blocks.TALL_GRASS.defaultBlockState());
+        }),
+        NewFeatureConsumer((rand, state) -> {
+            state.add(0, VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, rand.nextInt(3)));
+        }),
+        NewFeatureConsumer((rand, state) -> {
+
+        })
+
+    );
+
+    private Consumer<List<Object>> NewFeatureConsumer(BiConsumer<RandomSource, List<BlockState>> Stater) {
+        return (List<Object> a) -> {
+            WorldGenLevel level = (WorldGenLevel) a.get(0);
+            RandomSource rand = (RandomSource) a.get(1);
+            BlockPos pos = (BlockPos) a.get(2);
+            List<BlockPos> canHave = (List<BlockPos>) a.get(3);
+            HashMap<BlockPos, BlockState> adding = (HashMap<BlockPos, BlockState>) a.get(4);
+            Integer times = (Integer) a.get(5);
+            List<BlockState> bob = new ArrayList<>();
+            Stater.accept(rand, bob);
+            BlockState state = bob.get(0);
+            if (times < 0) {
+                if (state.getBlock() instanceof DoublePlantBlock DP) {
+                    VerdureUtil.putDoubleInMap(adding, pos, DP);
+                }
+                else adding.put(pos, state);
+                if (rand.nextInt(4) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
+
+                for (Direction direction : Direction.Plane.HORIZONTAL) {
+                    if (!level.getBlockState(pos.below().relative(direction)).is(Blocks.WATER) && rand.nextInt(4) == 0) {
+                        adding.put(pos.below().relative(direction), Blocks.COARSE_DIRT.defaultBlockState());
+                    }
                 }
             }
-            if (rand.nextInt(8) != 0) {
-                adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
+            for (Direction direction : Direction.Plane.HORIZONTAL.shuffledCopy(rand)) {
+                BlockPos newerPos = pos.relative(direction);
+                if (canHave.contains(newerPos) && !adding.containsKey(newerPos) && state.canSurvive(level, newerPos)) {
+                    a.set(5, times - 1);
+                    NewFeatureConsumer(Stater).accept(a);
+                }
             }
-        }
-        for (Direction direction : Direction.Plane.HORIZONTAL.shuffledCopy(rand)) {
-            BlockPos newerPos = pos.relative(direction);
-            if (canHave.contains(newerPos) && !adding.containsKey(newerPos) && Blocks.GRASS.canSurvive(Blocks.GRASS.defaultBlockState(), level, newerPos)) {
-                PlaceGrass(level, rand, newerPos, canHave, adding, times - rand.nextInt(1, 2));
-            }
-        }
-    }
-
-
-    private void PlaceRocks(RandomSource rand, BlockPos pos, HashMap<BlockPos, BlockState> adding) {
-
+        };
     }
 }
