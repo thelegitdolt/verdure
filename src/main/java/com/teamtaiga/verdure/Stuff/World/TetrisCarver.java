@@ -33,10 +33,6 @@ public class TetrisCarver {
         }
     }
 
-    public List<int[]> getPositions() {
-        return Positions;
-    }
-
     // Carve can only be used once!!!!
     public void Carve(int times, BlockPos origin, int y) {
         Carve(this.InitialTetris, times, origin, y);

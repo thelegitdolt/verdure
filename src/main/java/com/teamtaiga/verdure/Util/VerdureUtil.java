@@ -99,7 +99,15 @@ public class VerdureUtil {
         return new int[]{base[0]  + kernel[0], base[1] + kernel[1]};
     }
 
-
+    public static boolean isAnyAvailableBlock(BlockState state, Block... blocks) {
+        boolean hi = false;
+        for (Block block : blocks) {
+            if (state.is(block)) {
+                hi = true;
+            }
+        }
+        return hi;
+    }
 
     public static int FindNextAvailableY() {
         return 0;
