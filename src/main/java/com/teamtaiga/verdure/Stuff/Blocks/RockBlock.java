@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -17,18 +19,19 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 
 public class RockBlock extends Block implements SimpleWaterloggedBlock{
-    // todo: make waterloggable
     protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D);
-    public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 2);;
+    public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 2);
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
 
     public RockBlock(BlockBehaviour.Properties props) {
         super(props);
-        this.registerDefaultState(this.defaultBlockState().setValue(LEVEL, 0));
+        this.registerDefaultState(this.defaultBlockState().setValue(LEVEL, 0).setValue(WATERLOGGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LEVEL);
+        builder.add(LEVEL, WATERLOGGED);
     }
 
     @Nullable

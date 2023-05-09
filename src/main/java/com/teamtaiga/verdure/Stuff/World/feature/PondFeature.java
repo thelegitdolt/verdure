@@ -15,16 +15,16 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class PondFeature extends Feature<NoneFeatureConfiguration> {
     public PondFeature(Codec<NoneFeatureConfiguration> config) {
@@ -39,13 +39,19 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
         TetrisCarver carver = new TetrisCarver(4);
         carver.Carve(5, origin, origin.below(2).getY());
-        List<BlockPos> InitialHole = carver.getPosses();
+         List<BlockPos> InitialHole = carver.getPosses();
         assert InitialHole != null;
         for (BlockPos pos : InitialHole) {
             level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
             level.setBlock(pos.above(), Blocks.WATER.defaultBlockState(), 2);
         }
-        DecorateFoliage(ExpandHole(FindBorderOffset(InitialHole), level), level, rand);
+        HashMap<BlockPos, BlockState> toPlace = DecorateFoliage(ExpandHole(FindBorderOffset(InitialHole), level), level, rand);
+
+
+        for (Map.Entry<BlockPos, BlockState> entry : toPlace.entrySet()) {
+            level.setBlock(entry.getKey(), entry.getValue(), 2);
+        }
+
 
         BoneMealItem.growWaterPlant(ItemStack.EMPTY, (Level) level, origin.below(2), null);
         for (BlockPos pos : InitialHole) {
@@ -75,7 +81,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     // expands the hole created by carver
-    // then returns a list of blockpos at the border of the pond to cover with sugarcane, dsies and other stuff
+    // then returns a list of blockpos at the border of the pond to cover with sugarcane, daisies and other stuff
     private List<BlockPos> ExpandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level) {
         List<BlockPos> ToAddFoliage = new ArrayList<>();
         List<BlockPos> ToFillWater = new ArrayList<>();
@@ -130,27 +136,22 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         return null;
     }
 
-    private void DecorateFoliage(List<BlockPos> possies, WorldGenLevel level, RandomSource rand) {
+    private HashMap<BlockPos, BlockState> DecorateFoliage(List<BlockPos> possies, WorldGenLevel level, RandomSource rand) {
         HashMap<BlockPos, BlockState> placing = new HashMap<>();
-        int feature = 0;
-        while (feature < 4) {
-            BlockPos toPos = possies.get(rand.nextInt(possies.size()));
-            List<Object> parameters = List.of(
-                    level, rand, toPos, possies, placing, 5
-            );
-            int num = rand.nextInt(4);
-            if (rand.nextInt(4) < 3) {
-                FOLIAGE_PLACER_TYPES.get(num).accept(parameters);
+        for (BlockPos pos : possies) {
+            int hello = level.getRandom().nextInt(possies.size() * 2);
+            switch (hello) {
+                case 0 : placeSugarcane(level.getRandom(), pos, placing);
+                case 1 : addRocks(level.getRandom(), pos, level, placing, level.getRandom().nextInt(2, 6));
+                case 2 : addDaisies(level.getRandom(), pos, level, placing, level.getRandom().nextInt(3, 5));
             }
-            else PlaceSugarcane(rand, toPos, placing);
-            if (rand.nextInt(5) < 4) feature++;
         }
-        for (Map.Entry<BlockPos, BlockState> entries : placing.entrySet()) {
-            level.setBlock(entries.getKey(), entries.getValue(), 2);
-        }
+
+        touchUpWithGrass(rand, level, possies, placing);
+        return placing;
     }
 
-    private void PlaceSugarcane(RandomSource rand, BlockPos pos, HashMap<BlockPos, BlockState> adding) {
+    private static void placeSugarcane(RandomSource rand, BlockPos pos, HashMap<BlockPos, BlockState> adding) {
         for (int i = rand.nextInt(3, 4); i == 0; i--) {
             for (int j = 0; j < rand.nextInt(2, 4); i++) {
                 adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState());
@@ -158,43 +159,62 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
-    private final List<Consumer<List<Object>>> FOLIAGE_PLACER_TYPES = List.of(
-        NewFeatureConsumer((rand, state) -> state.add(0, rand.nextInt(4) == 0 ? Blocks.GRASS.defaultBlockState() : Blocks.TALL_GRASS.defaultBlockState())),
-        NewFeatureConsumer((rand, state) -> state.add(0, VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, rand.nextInt(3)))),
-        NewFeatureConsumer((rand, state) -> state.add(0, VerdureBlocks.WHITE_DAISIES.get().defaultBlockState()))
-    );
+    private static void addRocks(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
+        if (tries > 0) {
+            int value = 0;
+            if (tries > 4) value =  2;
+            else if (tries > 2) value = 1;
+            BlockState state = VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, value);
+            adding.put(pos, state);
 
-    private Consumer<List<Object>> NewFeatureConsumer(BiConsumer<RandomSource, List<BlockState>> Stater) {
-        return (List<Object> a) -> {
-            WorldGenLevel level = (WorldGenLevel) a.get(0);
-            RandomSource rand = (RandomSource) a.get(1);
-            BlockPos pos = (BlockPos) a.get(2);
-            List<BlockPos> canHave = (List<BlockPos>) a.get(3);
-            HashMap<BlockPos, BlockState> adding = (HashMap<BlockPos, BlockState>) a.get(4);
-            Integer times = (Integer) a.get(5);
-            List<BlockState> bob = new ArrayList<>();
-            Stater.accept(rand, bob);
-            BlockState state = bob.get(0);
-            if (times < 0) {
-                if (state.getBlock() instanceof DoublePlantBlock DP) {
-                    VerdureUtil.putDoubleInMap(adding, pos, DP);
+            @Nullable Direction direction = null;
+            for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
+                if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.ROCK.get()) && state.canSurvive(level, pos.relative(dir)))  direction = dir;
+            if (direction != null) addRocks(rand, pos.relative(direction), level, adding, tries - 1);
+        }
+    }
+
+    private static void addDaisies(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
+        if (tries > 0) {
+            BlockState state = VerdureBlocks.WHITE_DAISIES.get().defaultBlockState();
+            adding.put(pos, VerdureBlocks.WHITE_DAISIES.get().defaultBlockState());
+            @Nullable Direction direction = null;
+            for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
+                if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.WHITE_DAISIES.get()) && state.canSurvive(level, pos.relative(dir)))  direction = dir;
+            if (direction != null) addDaisies(rand, pos.relative(direction), level, adding, tries - 1);
+        }
+    }
+
+    private static void touchUpWithGrass(RandomSource rand, WorldGenLevel level, List<BlockPos> possies, HashMap<BlockPos, BlockState> adding) {
+        for (BlockPos pos : possies.stream().filter((pos) ->
+                !level.getBlockState(pos).is(VerdureBlocks.ROCK.get()) && !level.getBlockState(pos).is(VerdureBlocks.WHITE_DAISIES.get()) && !level.getBlockState(pos).is(Blocks.SUGAR_CANE)).toList()) {
+            int chance = 15;
+            int chance2 = 10;
+            for (BlockPos possed : VerdureUtil.getOrthogonalPos(pos)) {
+                if (level.getBlockState(possed.above()).is(Blocks.GRASS) || level.getBlockState(possed.above()).is(Blocks.TALL_GRASS)) {
+                    chance = 3;
                 }
-                else adding.put(pos, state);
-                if (rand.nextInt(4) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
-
-                for (Direction direction : Direction.Plane.HORIZONTAL) {
-                    if (!level.getBlockState(pos.below().relative(direction)).is(Blocks.WATER) && rand.nextInt(4) == 0) {
-                        adding.put(pos.below().relative(direction), Blocks.COARSE_DIRT.defaultBlockState());
+            }
+            if (rand.nextInt(chance) == 0) {
+                adding.put(pos, Blocks.TALL_GRASS.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER));
+                adding.put(pos.above(), Blocks.TALL_GRASS.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER));
+                for (BlockPos posab : VerdureUtil.getOrthogonalPos(pos)) {
+                    if (level.getBlockState(posab.below()).is(Blocks.COARSE_DIRT)) {
+                        chance2 = 3;
                     }
                 }
-            }
-            for (Direction direction : Direction.Plane.HORIZONTAL.shuffledCopy(rand)) {
-                BlockPos newerPos = pos.relative(direction);
-                if (canHave.contains(newerPos) && !adding.containsKey(newerPos) && state.canSurvive(level, newerPos)) {
-                    a.set(5, times - 1);
-                    NewFeatureConsumer(Stater).accept(a);
+                if (rand.nextInt(chance2) < 2) {
+                    adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
                 }
             }
-        };
+            else {
+                adding.put(pos, Blocks.GRASS.defaultBlockState());
+                if (rand.nextInt(3) == 0) {
+                    adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
+                }
+            }
+        }
+
     }
+
 }

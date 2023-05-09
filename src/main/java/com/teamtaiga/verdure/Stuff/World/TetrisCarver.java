@@ -16,7 +16,7 @@ public class TetrisCarver {
         Positions = new ArrayList<>();
         InitialTetris = Positions;
         Positions.add(new int[]{0, 0});
-        Posses = null;
+        Posses = new ArrayList<>();
         generateInitialTetris(new int[]{0, 0}, nodesCount);
     }
 

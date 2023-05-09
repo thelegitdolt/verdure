@@ -1,8 +1,12 @@
 package com.teamtaiga.verdure.Util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import static net.minecraft.core.Direction.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -29,9 +33,28 @@ public class VerdureUtil {
             new int[]{-1, 1},
             new int[]{-1, 0}
     };
+
+    public static BlockPos[] getOrthogonalPos(BlockPos pos) {
+        return new BlockPos[]{
+                pos.relative(SOUTH), pos.relative(NORTH), pos.relative(WEST), pos.relative(EAST),
+                pos.relative(NORTH).relative(EAST), pos.relative(SOUTH).relative(EAST),
+                pos.relative(NORTH).relative(WEST), pos.relative(SOUTH).relative(WEST)
+        };
+    }
+
+
     public static void setDoubleBlock(WorldGenLevel level, BlockPos pos, DoublePlantBlock block) {
         level.setBlock(pos, block.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER), 2);
         level.setBlock(pos.above(), block.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 2);
+    }
+
+    public static void setMaybeDoubleOrSingleBlock(WorldGenLevel level, BlockPos pos, Block block) {
+        if (block instanceof DoublePlantBlock DP) {
+            setDoubleBlock(level, pos, DP);
+        }
+        else {
+            level.setBlock(pos, block.defaultBlockState(), 2);
+        }
     }
 
     public static void putDoubleInMap(HashMap<BlockPos, BlockState> feature, BlockPos pos, DoublePlantBlock block) {
