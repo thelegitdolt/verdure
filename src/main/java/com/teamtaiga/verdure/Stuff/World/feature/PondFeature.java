@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -176,8 +177,8 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     private static void addDaisies(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
         if (tries > 0) {
-            BlockState state = VerdureBlocks.WHITE_DAISIES.get().defaultBlockState();
-            adding.put(pos, VerdureBlocks.WHITE_DAISIES.get().defaultBlockState());
+            BlockState state = VerdureBlocks.WHITE_DAISIES.get().defaultBlockState().setValue(PipeBlock.DOWN, true);
+            adding.put(pos, state);
             @Nullable Direction direction = null;
             for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
                 if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.WHITE_DAISIES.get()) && state.canSurvive(level, pos.relative(dir)))  direction = dir;
