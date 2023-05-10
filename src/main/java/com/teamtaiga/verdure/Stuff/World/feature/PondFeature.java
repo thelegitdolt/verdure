@@ -184,7 +184,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         }
         Direction dir = null;
         for (Direction dicks : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-            if (!level.getBlockState(pos.relative(dicks)).is(Blocks.SUGAR_CANE)
+            if (!adding.get(pos.relative(dicks)).is(Blocks.SUGAR_CANE)
                     && Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos.relative(dicks))
                     && inBoundingBox(pos.relative(dicks).below(), level, Blocks.WATER))
                 dir = dicks;
@@ -205,7 +205,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
             @Nullable Direction direction = null;
             for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-                if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.ROCK.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
+                if (!adding.get(pos.relative(dir)).is(VerdureBlocks.ROCK.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
             if (direction != null) addRocks(rand, pos.relative(direction), level, adding, tries - 1);
         }
     }
@@ -217,13 +217,14 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
             @Nullable Direction direction = null;
             for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-                if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.WHITE_DAISIES.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
+                if (!adding.get(pos.relative(dir)).is(VerdureBlocks.WHITE_DAISIES.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
             if (direction != null) addDaisies(rand, pos.relative(direction), level, adding, tries - 1);
         }
     }
 
     private static void touchUpWithGrass(RandomSource rand, WorldGenLevel level, List<BlockPos> possies, HashMap<BlockPos, BlockState> adding) {
-        for (BlockPos pos : possies.stream().filter((pos) -> level.getBlockState(pos).getBlock() instanceof AirBlock && Blocks.GRASS.defaultBlockState().canSurvive(level, pos)).toList()) {
+        for (BlockPos pos : possies.stream().filter((pos) -> VerdureUtil.isAnyAvailableBlock(adding.get(pos), VerdureBlocks.PINK_DAISIES.get(), VerdureBlocks.WHITE_DAISIES.get(),
+                VerdureBlocks.ROCK.get(), Blocks.SUGAR_CANE) && Blocks.GRASS.defaultBlockState().canSurvive(level, pos)).toList()) {
             int grassChance = 6;
             for (BlockPos possed : VerdureUtil.getOrthogonalPos(pos)) {
                 if (level.getBlockState(possed.above()).is(Blocks.GRASS) || level.getBlockState(possed.above()).is(Blocks.TALL_GRASS)) {
