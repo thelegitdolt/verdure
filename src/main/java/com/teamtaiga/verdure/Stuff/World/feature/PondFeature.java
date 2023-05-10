@@ -148,28 +148,28 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             if (hello == 0) {
                 if (rand.nextInt(caneChance) == 0)  {
                     addSugarcane(level.getRandom(), pos, level, placing);
-                    caneChance = 3;
-                }
-                else {
-                    caneChance--;
+//                    caneChance = 3;
+//                }
+//                else {
+//                    caneChance--;
                 }
             }
             else if (hello == 1) {
                  if (rand.nextInt(daisyChance) == 0) {
-                     addDaisies(level.getRandom(), pos, level, placing, level.getRandom().nextInt(2, 5));
-                     daisyChance = 3;
-                 }
-                 else {
-                     daisyChance--;
+                     addDaisies(level.getRandom(), pos, level, placing, level.getRandom().nextInt(2, 3));
+//                     daisyChance = 3;
+//                 }
+//                 else {
+//                     daisyChance--;
                  }
             }
             else if (hello == 2) {
                 if (rand.nextInt(rockChance) == 0) {
-                    addRocks(level.getRandom(), pos, level, placing, level.getRandom().nextInt(2, 5));
-                    rockChance = 3;
-                }
-                else {
-                    rockChance--;
+                    addRocks(level.getRandom(), pos, level, placing, level.getRandom().nextInt(1, 2));
+//                    rockChance = 3;
+//                }
+//                else {
+//                    rockChance--;
                 }
             }
         }
@@ -179,18 +179,20 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     private static void addSugarcane(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding) {
-        for (int i = 0; i < rand.nextInt(2, 4); i++) {
-            adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
-        }
-        Direction dir = null;
-        for (Direction dicks : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-            if (!adding.get(pos.relative(dicks)).is(Blocks.SUGAR_CANE)
-                    && Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos.relative(dicks))
-                    && inBoundingBox(pos.relative(dicks).below(), level, Blocks.WATER))
-                dir = dicks;
-        for (int i = 0; i < rand.nextInt(1, 2); i++) {
-            if (dir != null) {
-                adding.put(pos.relative(dir).above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
+        if (Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos)) {
+            for (int i = 0; i < rand.nextInt(2, 4); i++) {
+                adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
+            }
+            Direction dir = null;
+            for (Direction dicks : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
+                if (!adding.containsKey(pos.relative(dicks))
+                        && Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos.relative(dicks))
+                        && inBoundingBox(pos.relative(dicks).below(), level, Blocks.WATER))
+                    dir = dicks;
+            for (int i = 0; i < rand.nextInt(1, 2); i++) {
+                if (dir != null) {
+                    adding.put(pos.relative(dir).above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
+                }
             }
         }
     }
@@ -198,32 +200,32 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     private static void addRocks(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
         if (tries > 0) {
             int value = 0;
-            if (tries > 3) value =  2;
-            else if (tries > 1) value = 1;
+            if (tries == 2 ) value =  2;
+            else if (tries == 1) value = 1;
             BlockState state = VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, value);
             adding.put(pos, state);
             if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
             @Nullable Direction direction = null;
             for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-                if (!adding.get(pos.relative(dir)).is(VerdureBlocks.ROCK.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
+                if (!adding.containsKey(pos.relative(dir)) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
             if (direction != null) addRocks(rand, pos.relative(direction), level, adding, tries - 1);
         }
     }
 
     private static void addDaisies(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
         if (tries > 0) {
-            BlockState state = (rand.nextInt(10) == 3 ? VerdureBlocks.WHITE_DAISIES : VerdureBlocks.PINK_DAISIES).get().defaultBlockState().setValue(PipeBlock.DOWN, true);
+            BlockState state = (rand.nextInt(10) > 3 ? VerdureBlocks.WHITE_DAISIES : VerdureBlocks.PINK_DAISIES).get().defaultBlockState().setValue(PipeBlock.DOWN, true);
             adding.put(pos, state);
             if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
             @Nullable Direction direction = null;
             for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-                if (!adding.get(pos.relative(dir)).is(VerdureBlocks.WHITE_DAISIES.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
+                if (!adding.containsKey(pos.relative(dir)) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
             if (direction != null) addDaisies(rand, pos.relative(direction), level, adding, tries - 1);
         }
     }
 
     private static void touchUpWithGrass(RandomSource rand, WorldGenLevel level, List<BlockPos> possies, HashMap<BlockPos, BlockState> adding) {
-        for (BlockPos pos : possies.stream().filter((pos) -> VerdureUtil.isAnyAvailableBlock(adding.get(pos), VerdureBlocks.PINK_DAISIES.get(), VerdureBlocks.WHITE_DAISIES.get(),
+        for (BlockPos pos : possies.stream().filter((pos) -> !VerdureUtil.isAnyAvailableBlock(adding.get(pos), VerdureBlocks.PINK_DAISIES.get(), VerdureBlocks.WHITE_DAISIES.get(),
                 VerdureBlocks.ROCK.get(), Blocks.SUGAR_CANE) && Blocks.GRASS.defaultBlockState().canSurvive(level, pos)).toList()) {
             int grassChance = 6;
             for (BlockPos possed : VerdureUtil.getOrthogonalPos(pos)) {

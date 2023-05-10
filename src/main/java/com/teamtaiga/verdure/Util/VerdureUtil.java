@@ -100,13 +100,13 @@ public class VerdureUtil {
     }
 
     public static boolean isAnyAvailableBlock(BlockState state, Block... blocks) {
-        boolean hi = false;
+        if (state == null) return false;
         for (Block block : blocks) {
             if (state.is(block)) {
-                hi = true;
+               return true;
             }
         }
-        return hi;
+        return false;
     }
 
     public static int FindNextAvailableY() {
