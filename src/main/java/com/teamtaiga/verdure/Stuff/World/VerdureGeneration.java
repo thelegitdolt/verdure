@@ -6,7 +6,9 @@ import com.teamtaiga.verdure.Stuff.World.feature.DaisyPatchFeature;
 import com.teamtaiga.verdure.Stuff.World.feature.PondFeature;
 import com.teamtaiga.verdure.Util.Verdure;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
@@ -15,6 +17,9 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleRandomFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -36,8 +41,6 @@ public class VerdureGeneration {
             (DoublePlantBlock) Blocks.TALL_GRASS, Blocks.FERN, (MultifaceBlock) VerdureBlocks.PINK_DAISIES.get(), Blocks.PINK_TULIP, 2));
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> FEATURE_POND_BIG = FEATURES.register("pond_big", () -> new PondFeature(NoneFeatureConfiguration.CODEC));
 
-
-
     public static final class VerdureFeature {
         public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, Verdure.MOD_ID);
 
@@ -49,6 +52,12 @@ public class VerdureGeneration {
                 ("daisy_patch_pink", () -> new ConfiguredFeature<>(VerdureGeneration.FEATURE_DAISY_PATCH_PINK.get(), FeatureConfiguration.NONE));
         public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POND_BIG = register
                 ("pond_big", () -> new ConfiguredFeature<>(VerdureGeneration.FEATURE_POND_BIG.get(), FeatureConfiguration.NONE));
+
+        public static final RegistryObject<ConfiguredFeature<SimpleRandomFeatureConfiguration, ?>> PATCH_BUTTERFLY_ORCHID =
+                CONFIGURED_FEATURES.register("patch_butterfly_orchid", () -> new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR,
+                        new SimpleRandomFeatureConfiguration(HolderSet.direct(PlacementUtils.inlinePlaced(Feature.RANDOM_PATCH,
+                                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                                        new SimpleBlockConfiguration(BlockStateProvider.simple(VerdureBlocks.BUTTERFLY_ORCHID.get()))))))));
 
 
         private static <FC extends FeatureConfiguration, F extends Feature<FC>> RegistryObject<ConfiguredFeature<FC, ?>> register(String name, Supplier<ConfiguredFeature<FC, F>> feature) {
@@ -66,6 +75,8 @@ public class VerdureGeneration {
         public static final RegistryObject<PlacedFeature> DAISY_PATCH_PINK= register("daisy_patch_pink", VerdureFeature.DAISY_PATCH_PINK,
                 RarityFilter.onAverageOnceEvery(8), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
         public static final RegistryObject<PlacedFeature> POND_BIG= register("pond_big", VerdureFeature.DAISY_PATCH_PINK,
+                RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
+        public static final RegistryObject<PlacedFeature> PATCH_BUTTERFLY_ORCHIDS= register("patch_butterfly_orchids", VerdureFeature.PATCH_BUTTERFLY_ORCHID,
                 RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
 
         private static RegistryObject<PlacedFeature> register(String name, RegistryObject<? extends ConfiguredFeature<?, ?>> feature, PlacementModifier... placementModifiers) {
