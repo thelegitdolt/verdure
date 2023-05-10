@@ -12,10 +12,7 @@ import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -150,7 +147,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             int hello = level.getRandom().nextInt( (int) (possies.size() / 2.75));
             if (hello == 0) {
                 if (rand.nextInt(caneChance) == 0)  {
-                    addSugarcane(level.getRandom(), pos, level, placing, rand.nextInt(1, 4));
+                    addSugarcane(level.getRandom(), pos, level, placing);
                     caneChance = 3;
                 }
                 else {
@@ -181,41 +178,41 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         return placing;
     }
 
-    private static void addSugarcane(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
-         if (tries > 0) {
-             for (int j = 0; j < rand.nextInt(2, tries); j++) {
-                 adding.put(pos.above(j), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
-             }
-             BlockPos posser = null;
-             for (BlockPos possed : VerdureUtil.getOrthogonalPos(pos)) {
-                 if (inBoundingBox(possed.below(), level, Blocks.WATER)) {
-                     posser = possed;
-                 }
-             }
-             if (posser != null) {
-                 addSugarcane(rand, posser, level, adding, tries - 1);
-             }
-         }
+    private static void addSugarcane(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding) {
+        for (int i = 0; i < rand.nextInt(2, 4); i++) {
+            adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
+        }
+        Direction dir = null;
+        for (Direction dicks : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
+            if (!level.getBlockState(pos.relative(dicks)).is(Blocks.SUGAR_CANE)
+                    && Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos.relative(dicks))
+                    && inBoundingBox(pos.relative(dicks).below(), level, Blocks.WATER))
+                dir = dicks;
+        for (int i = 0; i < rand.nextInt(1, 2); i++) {
+            if (dir != null) {
+                adding.put(pos.relative(dir).above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
+            }
+        }
     }
 
     private static void addRocks(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
-//        if (tries > 0) {
-//            int value = 0;
-//            if (tries > 3) value =  2;
-//            else if (tries > 1) value = 1;
-//            BlockState state = VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, value);
-//            adding.put(pos, state);
-//            if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
-//            @Nullable Direction direction = null;
-//            for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-//                if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.ROCK.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
-//            if (direction != null) addRocks(rand, pos.relative(direction), level, adding, tries - 1);
-//        }
+        if (tries > 0) {
+            int value = 0;
+            if (tries > 3) value =  2;
+            else if (tries > 1) value = 1;
+            BlockState state = VerdureBlocks.ROCK.get().defaultBlockState().setValue(RockBlock.LEVEL, value);
+            adding.put(pos, state);
+            if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
+            @Nullable Direction direction = null;
+            for (Direction dir : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
+                if (!level.getBlockState(pos.relative(dir)).is(VerdureBlocks.ROCK.get()) && state.canSurvive(level, pos.relative(dir)) && inBoundingBox(pos.relative(dir).below(), level, Blocks.WATER))  direction = dir;
+            if (direction != null) addRocks(rand, pos.relative(direction), level, adding, tries - 1);
+        }
     }
 
     private static void addDaisies(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
         if (tries > 0) {
-            BlockState state = VerdureBlocks.WHITE_DAISIES.get().defaultBlockState().setValue(PipeBlock.DOWN, true);
+            BlockState state = (rand.nextInt(10) == 3 ? VerdureBlocks.WHITE_DAISIES : VerdureBlocks.PINK_DAISIES).get().defaultBlockState().setValue(PipeBlock.DOWN, true);
             adding.put(pos, state);
             if (rand.nextInt(2) == 0) adding.put(pos.below(), Blocks.COARSE_DIRT.defaultBlockState());
             @Nullable Direction direction = null;
@@ -226,9 +223,8 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     private static void touchUpWithGrass(RandomSource rand, WorldGenLevel level, List<BlockPos> possies, HashMap<BlockPos, BlockState> adding) {
-        for (BlockPos pos : possies.stream().filter((pos) ->
-                !VerdureUtil.isAnyAvailableBlock(level.getBlockState(pos), VerdureBlocks.ROCK.get(), VerdureBlocks.WHITE_DAISIES.get(), Blocks.SUGAR_CANE) && Blocks.GRASS.defaultBlockState().canSurvive(level, pos)).toList()) {
-            int grassChance = 7;
+        for (BlockPos pos : possies.stream().filter((pos) -> level.getBlockState(pos).getBlock() instanceof AirBlock && Blocks.GRASS.defaultBlockState().canSurvive(level, pos)).toList()) {
+            int grassChance = 6;
             for (BlockPos possed : VerdureUtil.getOrthogonalPos(pos)) {
                 if (level.getBlockState(possed.above()).is(Blocks.GRASS) || level.getBlockState(possed.above()).is(Blocks.TALL_GRASS)) {
                     grassChance = 4;
