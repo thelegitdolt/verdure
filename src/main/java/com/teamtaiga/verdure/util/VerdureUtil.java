@@ -50,12 +50,12 @@ public class VerdureUtil {
         level.setBlock(pos.above(), block.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), 2);
     }
 
-    public static void setMaybeDoubleOrSingleBlock(WorldGenLevel level, BlockPos pos, Block block) {
-        if (block instanceof DoublePlantBlock DP) {
+    public static void setMaybeDoubleOrSingleBlock(WorldGenLevel level, BlockPos pos, BlockState state) {
+        if (state.getBlock() instanceof DoublePlantBlock DP) {
             setDoubleBlock(level, pos, DP);
         }
         else {
-            level.setBlock(pos, block.defaultBlockState(), 2);
+            level.setBlock(pos, state, 2);
         }
     }
 

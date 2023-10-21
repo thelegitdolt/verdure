@@ -1,10 +1,10 @@
 package com.teamtaiga.verdure.common.world.feature;
 
 import com.mojang.serialization.Codec;
+import com.teamtaiga.verdure.util.Verdure;
 import com.teamtaiga.verdure.util.VerdureUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.*;
@@ -19,19 +19,19 @@ import java.util.Map;
 import static com.teamtaiga.verdure.util.VerdureUtil.DIRECTIONS_WITH_DIAGONALS;
 
 public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
-    private final DoublePlantBlock Tall;
-    private final Block Short;
-    private final MultifaceBlock Daisy;
-    private final Block Flower;
-    private final int Spread;
+    private final DoublePlantBlock tallDecor;
+    private final Block shortDecor;
+    private final MultifaceBlock daisy;
+    private final Block flower;
+    private final int spread;
 
-    public DaisyPatchFeature(Codec<NoneFeatureConfiguration> config, DoublePlantBlock tall, Block aShort, MultifaceBlock daisy, Block flower, int spread) {
+    public DaisyPatchFeature(Codec<NoneFeatureConfiguration> config, DoublePlantBlock tallDecor, Block aShortDecor, MultifaceBlock daisy, Block flower, int spread) {
         super(config);
-        Tall = tall;
-        Short = aShort;
-        Daisy = daisy;
-        Flower = flower;
-        Spread = spread;
+        this.tallDecor = tallDecor;
+        this.shortDecor = aShortDecor;
+        this.daisy = daisy;
+        this.flower = flower;
+        this.spread = spread;
     }
 
     @Override
@@ -41,61 +41,64 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
         RandomSource random = context.random();
         BlockPos originPos = context.origin();
 
-        for (int[] wassup : generateDaisyOffset(random, Spread)) {
+        for (int[] wassup : generateDaisyOffset(random, spread)) {
             if (wassup != null) {
                 BlockPos daisyPos = new BlockPos(originPos.getX() + wassup[0], originPos.getY(), originPos.getZ() + wassup[1]);
 
-                blocksToPlace.put(daisyPos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true));
+                blocksToPlace.put(daisyPos, daisy.defaultBlockState().setValue(PipeBlock.DOWN, true));
                 spreadDaisies(blocksToPlace, daisyPos, random, originPos, 90);
             }
         }
 
-        for (int i = -Spread; i <= Spread; i++) {
-            for (int j = -Spread; j <= Spread; j++) {
+        for (int i = -spread; i <= spread; i++) {
+            for (int j = -spread; j <= spread; j++) {
                 int chance = 90 - (int) (Math.sqrt(i*i + j*j) * 20);
 
                 BlockPos toPos = new BlockPos(originPos.getX() +i, originPos.getY(), originPos.getZ() + j);
-                if (random.nextInt(100) < chance && !blocksToPlace.get(toPos).is(Daisy) && !blocksToPlace.get(toPos).is(Daisy)) {
+                if (random.nextInt(100) < chance && !blockIsInMap(blocksToPlace, toPos, daisy)) {
                     if (random.nextInt(7) < 5) {
-                        blocksToPlace.put(toPos, Short.defaultBlockState());
+                        blocksToPlace.put(toPos, shortDecor.defaultBlockState());
                     }
                     else {
-                        VerdureUtil.addDoubleBlockToMap(blocksToPlace, toPos, Tall);
+                        blocksToPlace.put(toPos, tallDecor.defaultBlockState());
                     }
                 }
             }
         }
-        return generateBlocksInMap(level, blocksToPlace);
+        return generateBlocksInMap(level, blocksToPlace, originPos);
     }
 
 
     /**
      * If all the blocks in blocksToPlace are valid to place, places them and returns true. If not, return a false.
      */
-    private static boolean generateBlocksInMap(WorldGenLevel level, Map<BlockPos, BlockState> blocksToPlace) {
+    private static boolean generateBlocksInMap(WorldGenLevel level, Map<BlockPos, BlockState> blocksToPlace, BlockPos origin) {
         Map<BlockPos, BlockState> actualMap = new HashMap<>();
+
+        int numFlowersPlaced = 0;
         for (Map.Entry<BlockPos, BlockState> entry : blocksToPlace.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState state = entry.getValue();
-
-            boolean canPlaceThisEntry = false;
-            for (int i = 0; i < 4; i++) {
-                if (level.getBlockState(pos.relative(Direction.UP, i)).is(Blocks.GRASS_BLOCK)) {
-                    canPlaceThisEntry = true;
-                    actualMap.put(pos.relative(Direction.UP, i + 1),state);
-                    break;
+            for (int i = -1; i < 3; i++) {
+                if (!level.getBlockState(pos.above(i)).is(Blocks.GRASS_BLOCK)) {
+                    continue;
                 }
+                numFlowersPlaced++;
+                actualMap.put(pos.above(i + 1), state);
             }
-            if (!canPlaceThisEntry)
-                return false;
+        }
+
+        if (numFlowersPlaced <= 0) {
+            return false;
         }
 
         for (Map.Entry<BlockPos, BlockState> entry : actualMap.entrySet()) {
-            level.setBlock(entry.getKey(), entry.getValue(), 2);
+            VerdureUtil.setMaybeDoubleOrSingleBlock(level, entry.getKey(), entry.getValue());
         }
 
         return true;
     }
+
 
     /**
      * I DON'T FUCKING KNOW
@@ -135,12 +138,12 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
                 boolean daisyDoor = false;
                 for (int[] transformers : VerdureUtil.randomize(DIRECTIONS_WITH_DIAGONALS)) {
                     BlockPos relativePos = new BlockPos(pos.getX() + transformers[0], pos.getY(), pos.getZ() + transformers[1]);
-                    if ((!blocksToPlace.get(relativePos).is(Daisy) && !blocksToPlace.get(relativePos).is(Flower) && notPlaced && rand.nextInt(6) == 0) || daisyDoor) {
+                    if ((!blockIsInMap(blocksToPlace, relativePos, daisy) && !blockIsInMap(blocksToPlace, relativePos, flower) && notPlaced && rand.nextInt(6) == 0) || daisyDoor) {
                         if (!isPosInsideBoundingBox(pos, relativePos)) {
                             daisyDoor = true;
                         }
                         else {
-                            blocksToPlace.put(relativePos, Daisy.defaultBlockState().setValue(PipeBlock.DOWN, true));
+                            blocksToPlace.put(relativePos, daisy.defaultBlockState().setValue(PipeBlock.DOWN, true));
                             boolean backdoor = false;
                             for (int[] kernel : VerdureUtil.randomize(DIRECTIONS_WITH_DIAGONALS)) {
                                 BlockPos superRelativePos = new BlockPos(relativePos.getX() + kernel[0], pos.getY(), relativePos.getZ() + kernel[1]);
@@ -149,7 +152,7 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
                                         backdoor = true;
                                     }
                                     else {
-                                        blocksToPlace.put(superRelativePos, Flower.defaultBlockState());
+                                        blocksToPlace.put(superRelativePos, flower.defaultBlockState());
                                         notPlaced = false;
                                         backdoor = false;
                                     }
@@ -165,6 +168,15 @@ public class DaisyPatchFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     private boolean isPosInsideBoundingBox(BlockPos origin, BlockPos pos) {
-        return Math.abs(pos.getX() - origin.getX()) < Spread + 1|| Math.abs(pos.getZ() - origin.getX()) < Spread + 1;
+        return Math.abs(pos.getX() - origin.getX()) < spread + 1|| Math.abs(pos.getZ() - origin.getX()) < spread + 1;
     }
+
+
+    private static boolean blockIsInMap(Map<BlockPos, BlockState> map, BlockPos pos, Block block) {
+        BlockState state = map.get(pos);
+        if (state == null)
+            return false;
+        return state.is(block);
+    }
+
 }
