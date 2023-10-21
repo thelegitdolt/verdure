@@ -1,6 +1,6 @@
-package com.teamtaiga.verdure.Data.tags;
+package com.teamtaiga.verdure.data.tags;
 
-import com.teamtaiga.verdure.Util.Verdure;
+import com.teamtaiga.verdure.util.Verdure;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
-import static com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks.*;
+import static com.teamtaiga.verdure.core.registry.VerdureBlocks.*;
 
 public class VerdureBlockTags extends BlockTagsProvider {
     public VerdureBlockTags(DataGenerator p_126511_, @Nullable ExistingFileHelper existingFileHelper) {

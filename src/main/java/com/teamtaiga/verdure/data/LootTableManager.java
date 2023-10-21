@@ -1,9 +1,9 @@
-package com.teamtaiga.verdure.Data;
+package com.teamtaiga.verdure.data;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
-import com.teamtaiga.verdure.Util.Verdure;
+import com.teamtaiga.verdure.common.blocks.RockBlock;
+import com.teamtaiga.verdure.util.Verdure;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks.*;
+import static com.teamtaiga.verdure.core.registry.VerdureBlocks.*;
 
 public class LootTableManager extends LootTableProvider {
     private final List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> tables = ImmutableList.of(Pair.of(VerdureBlockLoot::new, LootContextParamSets.BLOCK));

@@ -1,7 +1,7 @@
-package com.teamtaiga.verdure.Stuff.World;
+package com.teamtaiga.verdure.common.world;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
+import com.teamtaiga.verdure.core.registry.VerdureBiomeModifier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.biome.Biome;

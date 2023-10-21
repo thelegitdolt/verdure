@@ -1,10 +1,9 @@
-package com.teamtaiga.verdure.Stuff.World.feature;
+package com.teamtaiga.verdure.common.world.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
-import com.teamtaiga.verdure.Stuff.World.TetrisCarver;
-import com.teamtaiga.verdure.Util.VerdureUtil;
+import com.teamtaiga.verdure.common.blocks.RockBlock;
+import com.teamtaiga.verdure.core.registry.VerdureBlocks;
+import com.teamtaiga.verdure.util.VerdureUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -45,7 +44,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
             level.setBlock(pos.above(), Blocks.WATER.defaultBlockState(), 2);
         }
-        HashMap<BlockPos, BlockState> toPlace = DecorateFoliage(ExpandHole(FindBorderOffset(InitialHole), level), level, rand);
+        HashMap<BlockPos, BlockState> toPlace = decorateFoliage(expandHole(findBorderOffset(InitialHole), level), level, rand);
 
 
         for (Map.Entry<BlockPos, BlockState> entry : toPlace.entrySet()) {
@@ -64,7 +63,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     }
 
 
-    private HashMap<BlockPos, List<Direction>> FindBorderOffset(List<BlockPos> Pos) {
+    private HashMap<BlockPos, List<Direction>> findBorderOffset(List<BlockPos> Pos) {
         HashMap<BlockPos, List<Direction>> borders = new HashMap<>();
         for (BlockPos possy : Pos) {
             List<Direction> directions = new ArrayList<>();
@@ -82,7 +81,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     // expands the hole created by carver
     // then returns a list of blockpos at the border of the pond to cover with sugarcane, daisies and other stuff
-    private List<BlockPos> ExpandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level) {
+    private List<BlockPos> expandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level) {
         List<BlockPos> ToAddFoliage = new ArrayList<>();
         List<BlockPos> ToFillWater = new ArrayList<>();
         for (Map.Entry<BlockPos, List<Direction>> entry : border.entrySet()) {
@@ -108,7 +107,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             }
             if (val.size() == 3) {
                 HashMap<BlockPos, Direction> corners = new HashMap<>();
-                Direction theOne = GetTOrigin(val);
+                Direction theOne = getTOrigin(val);
                 assert theOne != null;
                 for (Direction Shunned : val) {
                     if (!Shunned.equals(theOne)) {
@@ -127,7 +126,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         return ToAddFoliage;
     }
 
-    private static Direction GetTOrigin(List<Direction> DumDums) {
+    private static Direction getTOrigin(List<Direction> DumDums) {
         for (Direction dum : DumDums) {
             if (!DumDums.contains(dum.getOpposite())) {
                 return dum;
@@ -136,7 +135,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         return null;
     }
 
-    private HashMap<BlockPos, BlockState> DecorateFoliage(List<BlockPos> possies, WorldGenLevel level, RandomSource rand) {
+    private HashMap<BlockPos, BlockState> decorateFoliage(List<BlockPos> possies, WorldGenLevel level, RandomSource rand) {
         HashMap<BlockPos, BlockState> placing = new HashMap<>();
 
         int daisyChance = 1;

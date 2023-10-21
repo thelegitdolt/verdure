@@ -1,10 +1,10 @@
 // THIS IS COMPLETELY RIPPED OUT OF VECTOR'S CODE. CHANGE THIS BEFORE RELEASE
 
-package com.teamtaiga.verdure.Stuff.World;
+package com.teamtaiga.verdure.common.world;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
+import com.teamtaiga.verdure.core.registry.VerdurePlacementModifiers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;

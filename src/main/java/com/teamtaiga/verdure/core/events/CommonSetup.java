@@ -1,6 +1,5 @@
-package com.teamtaiga.verdure.SpookyStuff.Events;
+package com.teamtaiga.verdure.core.events;
 
-import com.teamtaiga.verdure.Stuff.World.VerdureGeneration;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class CommonSetup {

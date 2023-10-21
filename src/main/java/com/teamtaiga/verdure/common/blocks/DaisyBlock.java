@@ -1,6 +1,6 @@
-package com.teamtaiga.verdure.Stuff.Blocks;
+package com.teamtaiga.verdure.common.blocks;
 
-import com.teamtaiga.verdure.Data.tags.VerdureTags;
+import com.teamtaiga.verdure.data.tags.VerdureTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;

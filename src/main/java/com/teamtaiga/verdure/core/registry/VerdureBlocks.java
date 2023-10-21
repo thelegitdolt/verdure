@@ -1,13 +1,12 @@
-package com.teamtaiga.verdure.Stuff.Registry;
+package com.teamtaiga.verdure.core.registry;
 
 import com.teamabnormals.blueprint.common.block.BlueprintTallFlowerBlock;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
-import com.teamtaiga.verdure.Stuff.Blocks.CarpetFlowerBlock;
-import com.teamtaiga.verdure.Stuff.Blocks.DaisyBlock;
-import com.teamtaiga.verdure.Stuff.Blocks.RockBlock;
-import com.teamtaiga.verdure.Util.Verdure;
-import net.minecraft.data.worldgen.features.TreeFeatures;
+import com.teamtaiga.verdure.common.blocks.CarpetFlowerBlock;
+import com.teamtaiga.verdure.common.blocks.DaisyBlock;
+import com.teamtaiga.verdure.common.blocks.RockBlock;
+import com.teamtaiga.verdure.util.Verdure;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;

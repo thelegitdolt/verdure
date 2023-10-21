@@ -1,10 +1,10 @@
-package com.teamtaiga.verdure.Stuff.World;
+package com.teamtaiga.verdure.common.world;
 
 import com.google.common.collect.ImmutableList;
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBlocks;
-import com.teamtaiga.verdure.Stuff.World.feature.DaisyPatchFeature;
-import com.teamtaiga.verdure.Stuff.World.feature.PondFeature;
-import com.teamtaiga.verdure.Util.Verdure;
+import com.teamtaiga.verdure.core.registry.VerdureBlocks;
+import com.teamtaiga.verdure.common.world.feature.DaisyPatchFeature;
+import com.teamtaiga.verdure.common.world.feature.PondFeature;
+import com.teamtaiga.verdure.util.Verdure;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;

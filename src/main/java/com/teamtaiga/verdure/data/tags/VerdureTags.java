@@ -1,7 +1,7 @@
-package com.teamtaiga.verdure.Data.tags;
+package com.teamtaiga.verdure.data.tags;
 
 import com.teamabnormals.blueprint.core.util.TagUtil;
-import com.teamtaiga.verdure.Util.Verdure;
+import com.teamtaiga.verdure.util.Verdure;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 

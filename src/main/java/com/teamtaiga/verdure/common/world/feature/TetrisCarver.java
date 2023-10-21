@@ -1,6 +1,6 @@
-package com.teamtaiga.verdure.Stuff.World;
+package com.teamtaiga.verdure.common.world.feature;
 
-import com.teamtaiga.verdure.Util.VerdureUtil;
+import com.teamtaiga.verdure.util.VerdureUtil;
 import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ public class TetrisCarver {
 
     private void generateInitialTetris(int[] initialPos, int toGen) {
         if (toGen > 1) {
-            for (int[] cords : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
+            for (int[] cords : VerdureUtil.randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
                 int[] newCord = VerdureUtil.transformCords(initialPos, cords);
                 if (!VerdureUtil.ArrayInList(Positions, newCord)) {
                     Positions.add(newCord.clone());
@@ -46,7 +46,7 @@ public class TetrisCarver {
         List<int[]> newPiece = new ArrayList<>();
         boolean check = true;
         if (times > 0) {
-            for (int[] kernel : VerdureUtil.Randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
+            for (int[] kernel : VerdureUtil.randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
                 if (check) {
                     for (int[] cord : piece) {
                         newPiece.add(VerdureUtil.transformCords(cord, kernel));

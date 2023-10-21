@@ -1,13 +1,13 @@
-package com.teamtaiga.verdure.Util;
+package com.teamtaiga.verdure.util;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import com.teamtaiga.verdure.Data.LootTableManager;
-import com.teamtaiga.verdure.Data.tags.VerdureBlockTags;
-import com.teamtaiga.verdure.SpookyStuff.Events.CommonSetup;
-import com.teamtaiga.verdure.Stuff.Registry.VerdureBiomeModifier;
-import com.teamtaiga.verdure.Stuff.Registry.VerdurePlacementModifiers;
-import com.teamtaiga.verdure.Stuff.World.VerdureGeneration;
+import com.teamtaiga.verdure.data.LootTableManager;
+import com.teamtaiga.verdure.data.tags.VerdureBlockTags;
+import com.teamtaiga.verdure.core.events.CommonSetup;
+import com.teamtaiga.verdure.core.registry.VerdureBiomeModifier;
+import com.teamtaiga.verdure.core.registry.VerdurePlacementModifiers;
+import com.teamtaiga.verdure.common.world.VerdureGeneration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 @Mod(Verdure.MOD_ID)
 public class Verdure {
     public static final String MOD_ID = "verdure";
-    // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
     public Verdure() {

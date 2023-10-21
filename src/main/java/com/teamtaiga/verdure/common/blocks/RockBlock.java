@@ -1,4 +1,4 @@
-package com.teamtaiga.verdure.Stuff.Blocks;
+package com.teamtaiga.verdure.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
