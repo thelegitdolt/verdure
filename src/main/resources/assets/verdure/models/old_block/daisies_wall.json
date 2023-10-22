@@ -2,7 +2,7 @@
   "ambientocclusion": false,
   "render_type": "minecraft:cutout",
   "textures": {
-    "particle": "#daisy",
+    "particle": "verdure:block/daisies_full",
     "daisy": "#daisy"
   },
   "elements": [

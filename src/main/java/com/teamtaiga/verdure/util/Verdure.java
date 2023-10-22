@@ -2,8 +2,9 @@ package com.teamtaiga.verdure.util;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import com.teamtaiga.verdure.data.LootTableManager;
-import com.teamtaiga.verdure.data.tags.VerdureBlockTags;
+import com.teamtaiga.verdure.data.client.VerdureBlockstates;
+import com.teamtaiga.verdure.data.server.VerdureLootTables;
+import com.teamtaiga.verdure.data.server.tags.VerdureBlockTags;
 import com.teamtaiga.verdure.core.events.CommonSetup;
 import com.teamtaiga.verdure.core.registry.VerdureBiomeModifier;
 import com.teamtaiga.verdure.core.registry.VerdurePlacementModifiers;
@@ -54,14 +55,14 @@ public class Verdure {
 
     private void dataSetup(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        ExistingFileHelper helper = event.getExistingFileHelper();
 
-        boolean includeServer = event.includeServer();
-        VerdureBlockTags taggies = new VerdureBlockTags(generator, helper);
-        LootTableManager looties = new LootTableManager(generator);
+        boolean server = event.includeServer();
+        boolean client = event.includeClient();
 
-        generator.addProvider(includeServer, taggies);
-        generator.addProvider(includeServer, looties);
+        generator.addProvider(server, new VerdureBlockTags(event));
+        generator.addProvider(server, new VerdureLootTables(event));
+
+        generator.addProvider(client, new VerdureBlockstates(event));
 
 
 
@@ -84,7 +85,7 @@ public class Verdure {
         }
     }
 
-    public static ResourceLocation Loc(String hello) {
-        return new ResourceLocation(MOD_ID, hello);
+    public static ResourceLocation rlOf(String namespace) {
+        return new ResourceLocation(MOD_ID, namespace);
     }
 }

@@ -1,46 +1,45 @@
 package com.teamtaiga.verdure.common.blocks;
 
-import com.teamtaiga.verdure.data.tags.VerdureTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.MultifaceSpreader;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
-public class DaisyBlock extends MultifaceBlock {
+public class DaisyBlock extends MultifaceBlock implements BonemealableBlock {
+    private final MultifaceSpreader spreader = new MultifaceSpreader(this);
     public DaisyBlock(Properties props) {
         super(props);
     }
 
-    @Override
-    public MultifaceSpreader getSpreader() {
-        return null;
+    public @NotNull MultifaceSpreader getSpreader() {
+        return this.spreader;
     }
 
     @Override
-    public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+    public boolean canBeReplaced(@NotNull BlockState state, BlockPlaceContext context) {
         return !context.getItemInHand().is(this.asItem()) || super.canBeReplaced(state, context);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        boolean flag = false;
+    public boolean isValidBonemealTarget(@NotNull BlockGetter getter, @NotNull BlockPos pos, @NotNull BlockState state, boolean p_153292_) {
+        return Direction.stream().anyMatch((dir) -> this.spreader.canSpreadInAnyDirection(state, getter, pos, dir.getOpposite()));
+    }
 
-        for (Direction direction : DIRECTIONS) {
-            if (hasFace(state, direction)) {
-                BlockPos blockpos = pos.relative(direction);
-                if (!canAttachTo(level, direction, blockpos, level.getBlockState(blockpos))
-                        && !level.getBlockState(pos).is(VerdureTags.DAISIES_PLACEABLE_ON)) {
-                    return false;
-                }
+    @Override
+    public boolean isBonemealSuccess(@NotNull Level level, @NotNull RandomSource random, @NotNull BlockPos pos, @NotNull BlockState state) {
+        return true;
+    }
 
-                flag = true;
-            }
-        }
-
-        return flag;
+    public void performBonemeal(@NotNull ServerLevel level, @NotNull RandomSource random, @NotNull BlockPos pos, @NotNull BlockState state) {
+        this.spreader.spreadFromRandomFaceTowardRandomDirection(state, level, pos, random);
     }
 
 

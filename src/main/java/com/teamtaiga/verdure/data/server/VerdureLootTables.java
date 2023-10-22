@@ -1,4 +1,4 @@
-package com.teamtaiga.verdure.data;
+package com.teamtaiga.verdure.data.server;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
@@ -39,11 +40,11 @@ import java.util.stream.Collectors;
 
 import static com.teamtaiga.verdure.core.registry.VerdureBlocks.*;
 
-public class LootTableManager extends LootTableProvider {
+public class VerdureLootTables extends LootTableProvider {
     private final List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> tables = ImmutableList.of(Pair.of(VerdureBlockLoot::new, LootContextParamSets.BLOCK));
 
-    public LootTableManager(DataGenerator gen) {
-        super(gen);
+    public VerdureLootTables(GatherDataEvent e) {
+        super(e.getGenerator());
     }
 
     @Override
@@ -95,5 +96,8 @@ public class LootTableManager extends LootTableProvider {
                                     hasProperty(RockBlock.LEVEL, Blocked)));
             }))));
         }
+    }
+
+    public static class RecipeManager {
     }
 }

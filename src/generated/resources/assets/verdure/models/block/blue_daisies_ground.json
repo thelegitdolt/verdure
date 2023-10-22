@@ -1,0 +1,9 @@
+{
+  "parent": "verdure:block/daisies_ground",
+  "textures": {
+    "side": "verdure:block/blue_daisies_side",
+    "side1": "verdure:block/blue_daisies_side_1",
+    "top1": "verdure:block/blue_daisies_top_1",
+    "top2": "verdure:block/blue_daisies_top_2"
+  }
+}

@@ -1,0 +1,13 @@
+// 1.19.2	2023-10-21T22:35:17.657216	Block States: verdure
+5acd75fd711a734790539006dbf0a133e777bb56 assets/verdure/blockstates/blue_daisies.json
+812798f6422549476c16615160a419692f155095 assets/verdure/blockstates/pink_daisies.json
+5ebb261556f4b7e39664b8c895285d6e838b6973 assets/verdure/blockstates/white_daisies.json
+1effe69968b7a5edf54d3ed7bc0db12e24b351e2 assets/verdure/models/block/blue_daisies_ground.json
+a18d9d8b838fb819759c7eabf3bd5b11bad2d24c assets/verdure/models/block/blue_daisies_wall.json
+71ac19fcf088e1b1a40791af4874d8cd4abc59ea assets/verdure/models/block/pink_daisies_ground.json
+98e0ce378a9e150d058c2a621b512ac8bcf2c6c3 assets/verdure/models/block/pink_daisies_wall.json
+769d891da05b26f8d281eb40996b49e38d582627 assets/verdure/models/block/white_daisies_ground.json
+8eaef9691ab311d7419ebebef8e5d9ce332aef99 assets/verdure/models/block/white_daisies_wall.json
+0022f4d650a70185bc2e6966cc722c9f418d2e1a assets/verdure/models/item/blue_daisies.json
+2e4fc61eb2d4d4ab59d88e9d17dd1b741845cacd assets/verdure/models/item/pink_daisies.json
+18418097eaf0c8385dec8f4c76d06b983ed5e5c2 assets/verdure/models/item/white_daisies.json

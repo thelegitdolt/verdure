@@ -1,0 +1,7 @@
+{
+  "parent": "verdure:block/daisies_wall",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "daisy": "verdure:block/white_daisies_wall"
+  }
+}

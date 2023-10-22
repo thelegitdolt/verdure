@@ -1,10 +1,8 @@
 package com.teamtaiga.verdure.common.world.feature;
 
 import com.mojang.serialization.Codec;
-import com.teamtaiga.verdure.util.Verdure;
 import com.teamtaiga.verdure.util.VerdureUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.*;
