@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -48,7 +49,12 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         for (BlockPos pos : waterPos) {
             if (!isSafeSpotForWater(level, pos))
                 return false;
+            BlockState aboveState = level.getBlockState(pos.atY(origin.getY()));
+            if (!aboveState.isAir() && !(aboveState.getMaterial() == Material.REPLACEABLE_PLANT)) {
+                return false;
+            }
         }
+
 
         waterPos.forEach((pos) -> level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2));
         HashMap<BlockPos, BlockState> toPlace = decorateFoliage(potentialPos.getSecond(), level, rand);
@@ -175,25 +181,26 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     private static void addSugarcane(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding) {
-        if (Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos)) {
-            for (int i = 0; i < rand.nextInt(2, 4); i++) {
-                adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
-            }
-            Direction dir = null;
-            for (Direction dicks : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
-                if (!adding.containsKey(pos.relative(dicks))
-                        && Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos.relative(dicks))
-                        && inBoundingBox(pos.relative(dicks).below(), level, Blocks.WATER))
-                    dir = dicks;
-            for (int i = 0; i < rand.nextInt(1, 2); i++) {
-                if (dir != null) {
-                    adding.put(pos.relative(dir).above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
-                }
+        for (int i = 0; i < rand.nextInt(2, 4); i++) {
+            adding.put(pos.above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
+        }
+        Direction dir = null;
+        for (Direction dicks : Direction.Plane.HORIZONTAL.shuffledCopy(rand))
+            if (!adding.containsKey(pos.relative(dicks))
+                    && Blocks.SUGAR_CANE.defaultBlockState().canSurvive(level, pos.relative(dicks))
+                    && inBoundingBox(pos.relative(dicks).below(), level, Blocks.WATER))
+                dir = dicks;
+
+        for (int i = 0; i < rand.nextInt(1, 2); i++) {
+            if (dir != null) {
+                adding.put(pos.relative(dir).above(i), Blocks.SUGAR_CANE.defaultBlockState().setValue(BlockStateProperties.AGE_15, 0));
             }
         }
     }
 
     private static void addRocks(RandomSource rand, BlockPos pos, WorldGenLevel level, HashMap<BlockPos, BlockState> adding, int tries) {
+        if (VerdureBlocks.ROCK.get().defaultBlockState().canSurvive(level, pos))
+            return;
         if (tries > 0) {
             int value = 0;
             if (tries == 2 ) value =  2;

@@ -3,7 +3,8 @@
 	"render_type": "minecraft:cutout",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "verdure:block/rock1_2"
+		"0": "verdure:block/rock1_2",
+		"particle": "verdure:block/rock_particle"
 	},
 	"elements": [
 		{
