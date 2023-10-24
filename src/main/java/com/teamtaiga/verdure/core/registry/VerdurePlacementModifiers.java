@@ -2,7 +2,7 @@ package com.teamtaiga.verdure.core.registry;
 
 import com.mojang.serialization.Codec;
 import com.teamtaiga.verdure.common.world.BiomeTagFilter;
-import com.teamtaiga.verdure.util.Verdure;
+import com.teamtaiga.verdure.core.Verdure;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;

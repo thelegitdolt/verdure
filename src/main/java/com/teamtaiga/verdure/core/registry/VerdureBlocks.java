@@ -6,7 +6,7 @@ import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
 import com.teamtaiga.verdure.common.blocks.CarpetFlowerBlock;
 import com.teamtaiga.verdure.common.blocks.DaisyBlock;
 import com.teamtaiga.verdure.common.blocks.RockBlock;
-import com.teamtaiga.verdure.util.Verdure;
+import com.teamtaiga.verdure.core.Verdure;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;

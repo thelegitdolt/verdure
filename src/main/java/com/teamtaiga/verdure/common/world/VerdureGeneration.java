@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.teamtaiga.verdure.core.registry.VerdureBlocks;
 import com.teamtaiga.verdure.common.world.feature.DaisyPatchFeature;
 import com.teamtaiga.verdure.common.world.feature.PondFeature;
-import com.teamtaiga.verdure.util.Verdure;
+import com.teamtaiga.verdure.core.Verdure;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;

@@ -1,6 +1,7 @@
 package com.teamtaiga.verdure.common.world.feature;
 
 import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Pair;
 import com.teamtaiga.verdure.common.blocks.RockBlock;
 import com.teamtaiga.verdure.core.registry.VerdureBlocks;
 import com.teamtaiga.verdure.util.VerdureUtil;
@@ -20,10 +21,7 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PondFeature extends Feature<NoneFeatureConfiguration> {
     public PondFeature(Codec<NoneFeatureConfiguration> config) {
@@ -37,27 +35,38 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
         RandomSource rand = level.getRandom();
 
         TetrisCarver carver = new TetrisCarver(4);
-        carver.Carve(5, origin, origin.below(2).getY());
-         List<BlockPos> InitialHole = carver.getPosses();
-        assert InitialHole != null;
-        for (BlockPos pos : InitialHole) {
-            level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2);
-            level.setBlock(pos.above(), Blocks.WATER.defaultBlockState(), 2);
+        carver.carve(5, origin, origin.below(2).getY());
+
+        List<BlockPos> pondMold = Objects.requireNonNull(carver.getPosses());
+        List<BlockPos> waterPos = new ArrayList<>(pondMold);
+        waterPos.addAll(pondMold.stream().map(BlockPos::above).toList());
+
+        Pair<List<BlockPos>, List<BlockPos>> potentialPos = expandHole(findBorderOffset(pondMold), level);
+
+        waterPos.addAll(potentialPos.getFirst());
+
+        for (BlockPos pos : waterPos) {
+            if (!isSafeSpotForWater(level, pos))
+                return false;
         }
-        HashMap<BlockPos, BlockState> toPlace = decorateFoliage(expandHole(findBorderOffset(InitialHole), level), level, rand);
+
+        waterPos.forEach((pos) -> level.setBlock(pos, Blocks.WATER.defaultBlockState(), 2));
+        HashMap<BlockPos, BlockState> toPlace = decorateFoliage(potentialPos.getSecond(), level, rand);
 
 
         for (Map.Entry<BlockPos, BlockState> entry : toPlace.entrySet()) {
-            level.setBlock(entry.getKey(), entry.getValue(), 2);
+            BlockPos pos = entry.getKey();
+            BlockState state = entry.getValue();
+            if (state.is(Blocks.COARSE_DIRT)) {
+                level.setBlock(pos, state, 2);
+            }
+            else if (level.getBlockState(pos).isAir()) {
+                level.setBlock(pos, state, 2);
+            }
         }
 
 
         BoneMealItem.growWaterPlant(ItemStack.EMPTY, (Level) level, origin.below(2), null);
-        for (BlockPos pos : InitialHole) {
-            if (rand.nextInt(12) == 0) {
-                BoneMealItem.growWaterPlant(ItemStack.EMPTY, (Level) level, pos, null);
-            }
-        }
 
         return true;
     }
@@ -72,7 +81,7 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                     directions.add(dir);
                 }
             }
-            if (directions.size() > 0) {
+            if (!directions.isEmpty()) {
                 borders.put(possy.above(), directions);
             }
         }
@@ -81,17 +90,17 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
 
     // expands the hole created by carver
     // then returns a list of blockpos at the border of the pond to cover with sugarcane, daisies and other stuff
-    private List<BlockPos> expandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level) {
-        List<BlockPos> ToAddFoliage = new ArrayList<>();
-        List<BlockPos> ToFillWater = new ArrayList<>();
+    private Pair<List<BlockPos>, List<BlockPos>> expandHole(HashMap<BlockPos, List<Direction>> border, WorldGenLevel level) {
+        List<BlockPos> foliagePos = new ArrayList<>();
+        List<BlockPos> waterPos = new ArrayList<>();
         for (Map.Entry<BlockPos, List<Direction>> entry : border.entrySet()) {
             BlockPos pos = entry.getKey();
             List<Direction> val = entry.getValue();
 
             for (Direction shun : val) {
-                ToFillWater.add(pos.relative(shun));
-                ToFillWater.add(pos.relative(shun, 2));
-                ToAddFoliage.add(pos.relative(shun, 3).above());
+                waterPos.add(pos.relative(shun));
+                waterPos.add(pos.relative(shun, 2));
+                foliagePos.add(pos.relative(shun, 3).above());
             }
 
             if (val.size() == 2) {
@@ -100,9 +109,9 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                     corner = corner.relative(dirac);
                 }
 
-                ToFillWater.add(corner);
+                waterPos.add(corner);
                 for (Direction Dirac : val) {
-                    ToAddFoliage.add(corner.relative(Dirac).above());
+                    foliagePos.add(corner.relative(Dirac).above());
                 }
             }
             if (val.size() == 3) {
@@ -116,14 +125,13 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
                 }
                 for (Map.Entry<BlockPos, Direction> entries : corners.entrySet()) {
                     BlockPos original = entries.getKey();
-                    ToFillWater.add(original);
-                    ToAddFoliage.add(original.relative(theOne).above());
-                    ToAddFoliage.add(original.relative(entries.getValue()).above());
+                    waterPos.add(original);
+                    foliagePos.add(original.relative(theOne).above());
+                    foliagePos.add(original.relative(entries.getValue()).above());
                 }
             }
-            for (BlockPos fill : ToFillWater) level.setBlock(fill, Blocks.WATER.defaultBlockState(), 2);
         }
-        return ToAddFoliage;
+        return Pair.of(waterPos, foliagePos);
     }
 
     private static Direction getTOrigin(List<Direction> DumDums) {
@@ -147,28 +155,17 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             if (hello == 0) {
                 if (rand.nextInt(caneChance) == 0)  {
                     addSugarcane(level.getRandom(), pos, level, placing);
-//                    caneChance = 3;
-//                }
-//                else {
-//                    caneChance--;
                 }
             }
             else if (hello == 1) {
                  if (rand.nextInt(daisyChance) == 0) {
                      addDaisies(level.getRandom(), pos, level, placing, level.getRandom().nextInt(2, 3));
-//                     daisyChance = 3;
-//                 }
-//                 else {
-//                     daisyChance--;
+
                  }
             }
             else if (hello == 2) {
                 if (rand.nextInt(rockChance) == 0) {
                     addRocks(level.getRandom(), pos, level, placing, level.getRandom().nextInt(1, 2));
-//                    rockChance = 3;
-//                }
-//                else {
-//                    rockChance--;
                 }
             }
         }
@@ -257,5 +254,118 @@ public class PondFeature extends Feature<NoneFeatureConfiguration> {
             }
         }
         return false;
+    }
+
+    private static boolean isSafeSpotForWater(WorldGenLevel level, BlockPos pos) {
+        return isGrassOrDirt(level, pos) && isGrassOrDirt(level, pos.west()) && isGrassOrDirt(level, pos.east()) && isGrassOrDirt(level, pos.north()) && isGrassOrDirt(level, pos.south());
+    }
+
+    public class TetrisCarver {
+        private final List<int[]> positions;
+        private final List<int[]> initialTetris;
+        @Nullable private List<BlockPos> posses;
+
+        public TetrisCarver(int nodesCount) {
+            positions = new ArrayList<>();
+            initialTetris = positions;
+            positions.add(new int[]{0, 0});
+            posses = new ArrayList<>();
+            generateInitialTetris(new int[]{0, 0}, nodesCount);
+        }
+
+        private void generateInitialTetris(int[] initialPos, int toGen) {
+            if (toGen > 1) {
+                for (int[] cords : VerdureUtil.randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
+                    int[] newCord = VerdureUtil.transformCords(initialPos, cords);
+                    if (!VerdureUtil.ArrayInList(positions, newCord)) {
+                        positions.add(newCord.clone());
+                        generateInitialTetris(newCord, toGen - 1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Carve can only be used once!!!!
+        public void carve(int times, BlockPos origin, int y) {
+            carve(this.initialTetris, times, origin, y);
+        }
+
+        public List<BlockPos> getPosses() {
+            return this.posses;
+        }
+
+        private void carve(List<int[]> piece, int times, BlockPos origin, int y) {
+            List<int[]> newPiece = new ArrayList<>();
+            boolean check = true;
+            if (times > 0) {
+                for (int[] kernel : VerdureUtil.randomize(VerdureUtil.DIRECTION_NO_DIAGONALS)) {
+                    if (check) {
+                        for (int[] cord : piece) {
+                            newPiece.add(VerdureUtil.transformCords(cord, kernel));
+                        }
+                        if (!VerdureUtil.ArrayAllInList(positions, newPiece)) {
+                            for (int[] newCord : newPiece) {
+                                if (!VerdureUtil.ArrayInList(positions, newCord)) {
+                                    positions.add(newCord);
+                                }
+                            }
+                            check = false;
+                        }
+                    }
+                }
+                carve(newPiece, times - 1, origin, y);
+            }
+            else {
+                Centralize();
+                ConvertToBlockPos(origin, y);
+            }
+        }
+
+        private void Centralize() {
+            int big = -127;
+            int small = 127;
+            int indeX = 0;
+            int smalldeX = 0;
+            int Z = 0;
+            int Zmol = 0;
+            for (int i = 0; i < positions.size(); i++) {
+                if (positions.get(i)[0] > big) {
+                    big = positions.get(i)[0];
+                    indeX = i;
+                }
+                if (positions.get(i)[0] < small) {
+                    small = positions.get(i)[0];
+                    smalldeX = i;
+                }
+            }
+            big = -127;
+            small = 127;
+            for (int i = 0; i < positions.size(); i++) {
+                if (positions.get(i)[1] > big) {
+                    big = positions.get(i)[1];
+                    Z = i;
+                }
+                if (positions.get(i)[1] < small) {
+                    small = positions.get(i)[1];
+                    Zmol = i;
+                }
+            }
+
+            int XSurplus = ((positions.get(indeX)[0] + positions.get(smalldeX)[0])/2) ;
+            int ZSurplus = ((positions.get(Z)[1] + positions.get(Zmol)[1])/2);
+            positions.forEach((n) -> {
+                n[0] -= XSurplus;
+                n[1] -= ZSurplus;
+            });
+        }
+
+        public void ConvertToBlockPos(BlockPos origin, int y) {
+            List<BlockPos> list = new ArrayList<>();
+            for (int[] offsets : positions) {
+                list.add(new BlockPos(origin.getX() + offsets[0], y, origin.getZ() + offsets[1]));
+            }
+            this.posses = list;
+        }
     }
 }

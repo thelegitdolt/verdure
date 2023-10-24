@@ -1,8 +1,9 @@
-package com.teamtaiga.verdure.util;
+package com.teamtaiga.verdure.core;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import com.teamtaiga.verdure.data.client.VerdureBlockstates;
+import com.teamtaiga.verdure.data.client.VerdureItemModels;
 import com.teamtaiga.verdure.data.server.VerdureLootTables;
 import com.teamtaiga.verdure.data.server.tags.VerdureBlockTags;
 import com.teamtaiga.verdure.core.events.CommonSetup;
@@ -15,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -63,8 +63,7 @@ public class Verdure {
         generator.addProvider(server, new VerdureLootTables(event));
 
         generator.addProvider(client, new VerdureBlockstates(event));
-
-
+        generator.addProvider(client, new VerdureItemModels(event));
 
     }
 
