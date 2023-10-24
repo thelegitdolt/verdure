@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "verdure:block/undergrowth_perennials"
+      },
+      {
+        "model": "verdure:block/undergrowth_perennials",
+        "y": 90
+      },
+      {
+        "model": "verdure:block/undergrowth_perennials",
+        "y": 180
+      },
+      {
+        "model": "verdure:block/undergrowth_perennials",
+        "y": 270
+      }
+    ]
+  }
+}

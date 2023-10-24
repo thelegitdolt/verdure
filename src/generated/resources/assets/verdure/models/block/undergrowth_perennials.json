@@ -1,0 +1,8 @@
+{
+  "parent": "verdure:block/template_perennials",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "side": "verdure:block/undergrowth_perennials_side",
+    "top": "verdure:block/undergrowth_perennials_top"
+  }
+}

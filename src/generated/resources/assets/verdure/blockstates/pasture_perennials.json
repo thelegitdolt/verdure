@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "verdure:block/pasture_perennials"
+      },
+      {
+        "model": "verdure:block/pasture_perennials",
+        "y": 90
+      },
+      {
+        "model": "verdure:block/pasture_perennials",
+        "y": 180
+      },
+      {
+        "model": "verdure:block/pasture_perennials",
+        "y": 270
+      }
+    ]
+  }
+}

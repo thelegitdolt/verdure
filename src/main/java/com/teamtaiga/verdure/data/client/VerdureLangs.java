@@ -23,6 +23,7 @@ public class VerdureLangs extends LanguageProvider {
     protected void addTranslations() {
         this.simpleBlock(ROCK);
 
+        this.simpleBlock(CLOVER);
         this.simpleBlock(BUTTERFLY_ORCHID);
         this.simpleBlock(ELEPHANT_LEAF);
 

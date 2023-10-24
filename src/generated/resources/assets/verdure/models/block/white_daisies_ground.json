@@ -1,5 +1,5 @@
 {
-  "parent": "verdure:block/daisies_ground",
+  "parent": "verdure:block/template_daisies_ground",
   "textures": {
     "side": "verdure:block/white_daisies_side",
     "side1": "verdure:block/white_daisies_side_1",

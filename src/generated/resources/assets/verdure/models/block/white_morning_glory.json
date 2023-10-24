@@ -1,0 +1,7 @@
+{
+  "parent": "verdure:block/template_morning_glory",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "morning_glory": "verdure:block/white_morning_glory"
+  }
+}
