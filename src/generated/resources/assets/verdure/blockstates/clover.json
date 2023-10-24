@@ -2,19 +2,19 @@
   "variants": {
     "": [
       {
+        "model": "verdure:block/clover"
+      },
+      {
         "model": "verdure:block/clover",
-        "y": 270
+        "y": 90
       },
       {
         "model": "verdure:block/clover",
         "y": 180
       },
       {
-        "model": "verdure:block/clover"
-      },
-      {
         "model": "verdure:block/clover",
-        "y": 90
+        "y": 270
       }
     ]
   }

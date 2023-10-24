@@ -1,6 +1,7 @@
 package com.teamtaiga.verdure.data.client;
 
 import com.teamtaiga.verdure.core.Verdure;
+import com.teamtaiga.verdure.core.registry.VerdureBlocks;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoublePlantBlock;
@@ -9,6 +10,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,6 +35,8 @@ public class VerdureBlockstates extends BlockStateProvider {
         this.daisy(PINK_DAISIES, "pink");
 
         this.tallPlant(BUTTERFLY_ORCHID);
+        this.replaceablePlantWithExistingModel(CLOVER, true);
+        this.replaceablePlantWithExistingModel(ELEPHANT_LEAF, false);
 
         this.morningGlory(BLUE_MORNING_GLORY, "blue");
         this.morningGlory(PURPLE_MORNING_GLORY, "purple");
@@ -44,26 +48,26 @@ public class VerdureBlockstates extends BlockStateProvider {
         this.perennials(UNDERGROWTH_PERENNIALS, "undergrowth");
     }
 
+    private void replaceablePlantWithExistingModel(RegistryObject<Block> block, boolean doItem) {
+        ModelFile model = new ModelFile.ExistingModelFile(modLoc("block/" + getName(block)), this.models().existingFileHelper);
+        if (doItem)
+            this.itemModels().withExistingParent(this.getName(block), "item/generated").texture("layer0", this.modLoc("item/" + getName(block)));
+        this.variantModelWithAllRotations(block, model);
+    }
+
     private void perennials(RegistryObject<Block> perennials, String flowerType) {
         ModelFile model = this.models().withExistingParent(this.getName(perennials), modLoc("template_perennials"))
                 .texture("side", this.modLoc("block/" + flowerType + "_perennials_side"))
                 .texture("top", this.modLoc("block/" + flowerType + "_perennials_top")).renderType("cutout");
         this.itemModels().withExistingParent(this.getName(perennials), "item/generated").texture("layer0", this.modLoc("block/" + flowerType + "_perennials_top"));
-        this.getVariantBuilder(perennials.get()).partialState()
-                .setModels(new ConfiguredModel(model, 0, 0, false),
-                        new ConfiguredModel(model,0,  90, false),
-                        new ConfiguredModel(model, 0, 180, false),
-                        new ConfiguredModel(model, 0, 270, false));
+        this.variantModelWithAllRotations(perennials, model);
     }
 
     private void morningGlory(RegistryObject<? extends Block> mgBlock, String flowerCol) {
         ModelFile model = this.models().withExistingParent(flowerCol + "_morning_glory", modLoc("template_morning_glory"))
                 .texture("morning_glory", this.modLoc("block/" + flowerCol + "_morning_glory")).renderType("cutout");
-        this.getVariantBuilder(mgBlock.get()).partialState()
-                .setModels(new ConfiguredModel(model, 0, 0, false),
-                        new ConfiguredModel(model,0,  90, false),
-                        new ConfiguredModel(model, 0, 180, false),
-                        new ConfiguredModel(model, 0, 270, false));
+        this.itemModels().withExistingParent(this.getName(mgBlock), "item/generated").texture("layer0", this.modLoc("item/" + flowerCol + "_morning_glory"));
+        this.variantModelWithAllRotations(mgBlock, model);
     }
 
     private void daisy(RegistryObject<? extends Block> daisyBlock, String daisyCol) {
@@ -74,7 +78,7 @@ public class VerdureBlockstates extends BlockStateProvider {
                 .texture("side1", modLoc("block/" + daisyCol + "_daisies_side_1"))
                 .texture("top1", modLoc("block/" + daisyCol + "_daisies_top_1"))
                 .texture("top2", modLoc("block/" + daisyCol + "_daisies_top_2"));
-        this.itemModels().withExistingParent(this.getName(daisyBlock), "item/generated").texture("layer0", this.modLoc("block/" + daisyCol + "_daisies_wall"));
+        this.itemModels().withExistingParent(this.getName(daisyBlock), "item/generated").texture("layer0", this.modLoc("item/" + daisyCol + "_daisies"));
         this.getMultipartBuilder(daisyBlock.get())
                 .part().modelFile(wallModel).uvLock(true).rotationX(270).addModel().condition(BlockStateProperties.UP, true).end()
                 .part().modelFile(wallModel).addModel().condition(BlockStateProperties.NORTH, true).end()
@@ -99,4 +103,11 @@ public class VerdureBlockstates extends BlockStateProvider {
         return Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(object.get().asItem())).getPath();
     }
 
+    private void variantModelWithAllRotations(RegistryObject<? extends Block> mgBlock, ModelFile model) {
+        this.getVariantBuilder(mgBlock.get()).partialState()
+                .setModels(new ConfiguredModel(model, 0, 0, false),
+                        new ConfiguredModel(model,0,  90, false),
+                        new ConfiguredModel(model, 0, 180, false),
+                        new ConfiguredModel(model, 0, 270, false));
+    }
 }

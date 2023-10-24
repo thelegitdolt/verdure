@@ -1,7 +1,9 @@
-// 1.19.2	2023-10-23T22:37:44.145012	Block States: verdure
+// 1.19.2	2023-10-24T07:57:56.640406	Block States: verdure
 5acd75fd711a734790539006dbf0a133e777bb56 assets/verdure/blockstates/blue_daisies.json
 dbf6b3147b1464516fdf75f09ff34e642d81556c assets/verdure/blockstates/blue_morning_glory.json
 2686f05ddab114601c4b27351dc16f27375513fb assets/verdure/blockstates/butterfly_orchid.json
+3f75b266a07816c81cea4ba5032cc5d9b1955e6a assets/verdure/blockstates/clover.json
+5f0d7775cc782ee64392d0a5053f023b35d229d6 assets/verdure/blockstates/elephant_leaf.json
 2006f559e26cf9971a11a3f8672b0c9d7cc9adf2 assets/verdure/blockstates/forest_perennials.json
 f2a3b54091dbb429343d9a61f3a49614951b9f62 assets/verdure/blockstates/frosty_perennials.json
 939f0afe441c3b221106e482af770085889454a0 assets/verdure/blockstates/pasture_perennials.json
@@ -25,11 +27,15 @@ d759e69fb85b2e64fa36840f140b726c5be0c33e assets/verdure/models/block/pink_daisie
 250e780c9351486b536c597e76310755b8b7bee8 assets/verdure/models/block/white_daisies_ground.json
 bbab2f2f67b361e13fc2b2f29bbdece67f06f60b assets/verdure/models/block/white_daisies_wall.json
 07e3e52b2661799f6da58e8db0a5e80bf2677180 assets/verdure/models/block/white_morning_glory.json
-0022f4d650a70185bc2e6966cc722c9f418d2e1a assets/verdure/models/item/blue_daisies.json
+adb6fc8d9d1e57fdca5179c7cd7dae1753e285d3 assets/verdure/models/item/blue_daisies.json
+07dd17ba483a2dd5bd2c1951e72fe5a6027d3166 assets/verdure/models/item/blue_morning_glory.json
 3705756442ef9516b2e49eceda7bfb61763b6f86 assets/verdure/models/item/butterfly_orchid.json
+96869e84e4b7944ddb6e987e72c8752d007e4957 assets/verdure/models/item/clover.json
 b04bafaaf1e8a5f57536922b468dec0cbc2e5284 assets/verdure/models/item/forest_perennials.json
 9f2bba3d494db965b7c24dd85687ee2896864120 assets/verdure/models/item/frosty_perennials.json
 4daaede7a3573de491a6365f6118ede97c10d91a assets/verdure/models/item/pasture_perennials.json
-2e4fc61eb2d4d4ab59d88e9d17dd1b741845cacd assets/verdure/models/item/pink_daisies.json
+110f1c32e91ae7f48bd7909240add3dd798f922d assets/verdure/models/item/pink_daisies.json
+f00cde0ad9773ecfba29a60331bf1df1ce335e17 assets/verdure/models/item/purple_morning_glory.json
 0c27779fb34855aa3d8bab99e97ce9b0aee001a2 assets/verdure/models/item/undergrowth_perennials.json
-18418097eaf0c8385dec8f4c76d06b983ed5e5c2 assets/verdure/models/item/white_daisies.json
+34de469b1eb9139d103711a65d8b640eebea522c assets/verdure/models/item/white_daisies.json
+a8b49bc94d30b4b7da1d60beba7f723dd90175d3 assets/verdure/models/item/white_morning_glory.json

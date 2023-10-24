@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "verdure:block/elephant_leaf"
+      },
+      {
+        "model": "verdure:block/elephant_leaf",
+        "y": 90
+      },
+      {
+        "model": "verdure:block/elephant_leaf",
+        "y": 180
+      },
+      {
+        "model": "verdure:block/elephant_leaf",
+        "y": 270
+      }
+    ]
+  }
+}
